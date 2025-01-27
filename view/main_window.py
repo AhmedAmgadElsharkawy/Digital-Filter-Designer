@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow,QWidget,QHBoxLayout,QVBoxLayout,QLabel,QPushButton
 
 from view.custom_z_plane import CustomZPlane
+from view.response_plot import ResponsePlot
 
 
 class MainWindow(QMainWindow):
@@ -49,6 +50,15 @@ class MainWindow(QMainWindow):
         self.clear_controls_widget_layout.addWidget(self.clear_poles_button)
         self.clear_controls_widget_layout.addWidget(self.clear_zeroes_button)
         self.clear_controls_widget_layout.addWidget(self.clear_all_poles_and_zeroes_button)
+
+        self.undo_redo_widget = QWidget()
+        self.undo_redo_widget_layout = QHBoxLayout(self.undo_redo_widget)
+        self.controls_widget_layout.addWidget(self.undo_redo_widget)
+        self.undo_button = QPushButton("Undo")
+        self.redo_button = QPushButton("Redo")
+        self.undo_redo_widget_layout.addWidget(self.undo_button)
+        self.undo_redo_widget_layout.addWidget(self.redo_button)
+
         
 
         self.filter_row = QWidget()
@@ -57,6 +67,15 @@ class MainWindow(QMainWindow):
         
         self.custom_z_plane = CustomZPlane()
         self.filter_row_layout.addWidget(self.custom_z_plane)
+
+        self.filter_response_plots_widget = QWidget()
+        self.filter_response_plots_widget_layout = QVBoxLayout(self.filter_response_plots_widget)
+        self.filter_row_layout.addWidget(self.filter_response_plots_widget)
+        self.filter_magnitude_response = ResponsePlot(title="Magnitude Response",xlabel='Normalized Frequency (xπ rad/sample)',ylabel='Magnitude')
+        self.filter_phase_response = ResponsePlot(title="Phase Response", xlabel='Normalized Frequency (xπ rad/sample)',ylabel='Phase (radians)')
+        self.filter_response_plots_widget_layout.addWidget(self.filter_magnitude_response)
+        self.filter_response_plots_widget_layout.addWidget(self.filter_phase_response)
+        
 
 
 
