@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow,QTableWidget,QWidget,QHBoxLayout,QVBoxLayout,QLabel,QPushButton,QComboBox,QSpinBox,QDoubleSpinBox
+import pyqtgraph as pg
 
 from view.custom_z_plane import CustomZPlane
 from view.response_plot import ResponsePlot
@@ -178,39 +179,6 @@ class MainWindow(QMainWindow):
         self.all_pass_filters_widget_layout.setContentsMargins(0,0,0,0)
         self.right_widget_layout.addWidget(self.all_pass_filters_widget)
 
-        # self.all_pass_filters_table = QTableWidget()
-        # self.all_pass_filters_table.setColumnCount(2)
-        # self.all_pass_filters_table.setHorizontalHeaderLabels(['Column 1', 'Column 2'])
-        # self.all_pass_filters_widget_layout.addWidget(self.all_pass_filters_table)
-        # self.all_pass_filters_table.horizontalHeader().setStretchLastSection(True)
-        # self.all_pass_filters_table.horizontalHeader().setSectionResizeMode(0, 1)  # Resize first column
-        # self.all_pass_filters_table.horizontalHeader().setSectionResizeMode(1, 1)  # Resize second column
-
-      
-
-        # self.all_pass_filter_inputs_container = QWidget()
-        # self.all_pass_filter_inputs_container_layout = QHBoxLayout(self.all_pass_filter_inputs_container)
-        # self.all_pass_filters_widget_layout.addWidget(self.all_pass_filter_inputs_container)
-
-        # self.real_part_label = QLabel("real")
-        # self.imaginary_part_label = QLabel("imag")
-        # self.real_part_spin = QDoubleSpinBox()
-        # self.real_part_spin.setValue(0)
-        # self.real_part_spin.setDecimals(2)
-        # self.real_part_spin.setSingleStep(0.1)
-        # self.imaginary_part_spin = QDoubleSpinBox()
-        # self.imaginary_part_spin.setValue(0)
-        # self.imaginary_part_spin.setDecimals(2)
-        # self.imaginary_part_spin.setSingleStep(0.1)
-        # self.all_pass_filter_inputs_container_layout.addWidget(self.real_part_label)
-        # self.all_pass_filter_inputs_container_layout.addWidget(self.real_part_spin)
-        # self.all_pass_filter_inputs_container_layout.addWidget(self.imaginary_part_label)
-        # self.all_pass_filter_inputs_container_layout.addWidget(self.imaginary_part_spin)
-        # self.add_all_pass_filter_button = QPushButton("Add")
-        # self.all_pass_filter_inputs_container_layout.addWidget(self.add_all_pass_filter_button)
-
-        # self.real_part_spin.setButtonSymbols(QSpinBox.NoButtons)
-        # self.imaginary_part_spin.setButtonSymbols(QSpinBox.NoButtons)
 
 
         self.all_pass_filters_table = CustomTable()
@@ -222,6 +190,38 @@ class MainWindow(QMainWindow):
         self.all_pass_filters_widget_layout.addWidget(self.all_pass_filter_phase_response)
         self.all_pass_filters_widget_layout.addWidget(self.all_pass_filters_table)
         self.all_pass_filters_widget_layout.addWidget(self.apply_all_pass_filter_button)
+        
+        
+        self.signal_row = QWidget()
+        self.signal_row_layout = QHBoxLayout(self.signal_row)
+        self.left_container_layout.addWidget(self.signal_row)
+        self.signal_row_layout.setContentsMargins(0,0,0,0)
+        
+        self.signal_plots_container = QWidget()
+        self.signal_plots_container_layout = QVBoxLayout(self.signal_plots_container)
+        self.signal_plots_container_layout.setContentsMargins(0,0,0,0)
+        self.signal_row_layout.addWidget(self.signal_plots_container)
+
+        self.signal_plot = pg.PlotWidget()
+        self.signal_plot.setTitle("Signal Plot", color="k", size="8pt")
+        self.signal_plot.setBackground("w")
+        self.signal_plot.showGrid(x=True, y=True)
+        self.signal_plot.getAxis('bottom').setPen(pg.mkPen('k'))  
+        self.signal_plot.getAxis('left').setPen(pg.mkPen('k'))
+        self.signal_plot.getAxis('bottom').setTextPen(pg.mkPen('k')) 
+        self.signal_plot.getAxis('left').setTextPen(pg.mkPen('k')) 
+
+        self.filtered_signal_plot = pg.PlotWidget()
+        self.filtered_signal_plot.setTitle("Filtered Signal Plot", color="k", size="8pt")
+        self.filtered_signal_plot.setBackground("w")
+        self.filtered_signal_plot.showGrid(x=True, y=True)
+        self.filtered_signal_plot.getAxis('bottom').setPen(pg.mkPen('k'))  
+        self.filtered_signal_plot.getAxis('left').setPen(pg.mkPen('k'))
+        self.filtered_signal_plot.getAxis('bottom').setTextPen(pg.mkPen('k')) 
+        self.filtered_signal_plot.getAxis('left').setTextPen(pg.mkPen('k')) 
+
+        self.signal_plots_container_layout.addWidget(self.signal_plot)
+        self.signal_plots_container_layout.addWidget(self.filtered_signal_plot)
         
         
 
