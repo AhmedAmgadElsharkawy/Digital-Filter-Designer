@@ -1,8 +1,9 @@
-from PyQt5.QtWidgets import QMainWindow,QWidget,QHBoxLayout,QVBoxLayout,QLabel,QPushButton,QComboBox,QSpinBox,QDoubleSpinBox
+from PyQt5.QtWidgets import QMainWindow,QTableWidget,QWidget,QHBoxLayout,QVBoxLayout,QLabel,QPushButton,QComboBox,QSpinBox,QDoubleSpinBox
 
 from view.custom_z_plane import CustomZPlane
 from view.response_plot import ResponsePlot
 from view.custom_double_spin_box import CustomDoubleSpinBox
+from view.custom_table import CustomTable
 
 
 class MainWindow(QMainWindow):
@@ -61,10 +62,17 @@ class MainWindow(QMainWindow):
         self.undo_redo_widget_layout.addWidget(self.redo_button)
 
         
+        self.bottom_container = QWidget()
+        self.bottom_container_layout = QHBoxLayout(self.bottom_container)
+        self.main_widget_layout.addWidget(self.bottom_container)
+
+        self.left_container = QWidget()
+        self.left_container_layout = QVBoxLayout(self.left_container)
+        self.bottom_container_layout.addWidget(self.left_container)
 
         self.filter_row = QWidget()
         self.filter_row_layout = QHBoxLayout(self.filter_row) 
-        self.main_widget_layout.addWidget(self.filter_row)
+        self.left_container_layout.addWidget(self.filter_row)
         
         self.custom_z_plane = CustomZPlane()
         self.filter_row_layout.addWidget(self.custom_z_plane)
@@ -77,12 +85,21 @@ class MainWindow(QMainWindow):
         self.filter_response_plots_widget_layout.addWidget(self.filter_magnitude_response)
         self.filter_response_plots_widget_layout.addWidget(self.filter_phase_response)
         
+        self.right_widget = QWidget()
+        self.right_widget_layout = QVBoxLayout(self.right_widget)
+        self.right_widget.setFixedWidth(400)
+        self.right_widget_layout.setContentsMargins(0,0,0,0)
+        self.bottom_container_layout.addWidget(self.right_widget)
+
         self.filters_widget = QWidget()
         self.filters_widget_layout = QVBoxLayout(self.filters_widget)
-        self.filter_row_layout.addWidget(self.filters_widget)
+        self.filters_widget_layout.setContentsMargins(0,0,0,0)
+        self.filters_widget_layout.setSpacing(0)
+        self.right_widget_layout.addWidget(self.filters_widget)
         
         self.filters_widget_header = QWidget()
         self.filters_widget_header_layout = QHBoxLayout(self.filters_widget_header)
+        self.filters_widget_header_layout.setContentsMargins(0,0,0,0)
         self.filters_widget_layout.addWidget(self.filters_widget_header)
         filter_items = ['Butterworth Filter', 'Chebyshev Filter', 'inv Chebyshev Filter', 'Bessel Filter',"Elliptic Filter"]
         self.filters_combobox = QComboBox()
@@ -91,12 +108,16 @@ class MainWindow(QMainWindow):
         self.filters_widget_header_layout.addWidget(self.filters_combobox)
         self.filters_widget_header_layout.addWidget(self.apply_filter_button)
 
+        
+
         self.filter_controls_widget = QWidget()
         self.filter_controls_widget_layout = QVBoxLayout(self.filter_controls_widget)
+        self.filter_controls_widget_layout.setContentsMargins(0,0,0,0)
         self.filters_widget_layout.addWidget(self.filter_controls_widget)
 
         self.filter_type_container = QWidget()
         self.filter_type_container_layout = QHBoxLayout(self.filter_type_container)
+        self.filter_type_container_layout.setContentsMargins(0,0,0,0)
         self.filter_controls_widget_layout.addWidget(self.filter_type_container)
         self.filter_type_label = QLabel("type")
         self.filter_types = ['Low-pass', 'High-pass', 'Band-pass', 'Band-stop']
@@ -107,6 +128,7 @@ class MainWindow(QMainWindow):
 
         self.filter_order_container = QWidget()
         self.filter_order_container_layout = QHBoxLayout(self.filter_order_container)
+        self.filter_order_container_layout.setContentsMargins(0,0,0,0)
         self.filter_controls_widget_layout.addWidget(self.filter_order_container)
         self.filter_order_label = QLabel("Order")
         self.filter_order_container_layout.addWidget(self.filter_order_label)
@@ -114,6 +136,7 @@ class MainWindow(QMainWindow):
         self.filter_order_spin_box.setRange(1, 4)
         self.filter_order_spin_box.setValue(1)
         self.filter_order_container_layout.addWidget(self.filter_order_spin_box)
+        self.filter_order_spin_box.setButtonSymbols(QSpinBox.NoButtons)
 
 
         self.filter_start_frequency_container = CustomDoubleSpinBox(label="Start Frequency")
@@ -131,7 +154,52 @@ class MainWindow(QMainWindow):
         self.stopband_ripple_contnainer = CustomDoubleSpinBox(label="Stopband Ripple")
         self.filter_controls_widget_layout.addWidget(self.filter_end_frequency_container)
         
-        
+        self.all_pass_filters_widget = QWidget()
+        self.all_pass_filters_widget_layout = QVBoxLayout(self.all_pass_filters_widget)
+        self.right_widget_layout.addWidget(self.all_pass_filters_widget)
+
+        # self.all_pass_filters_table = QTableWidget()
+        # self.all_pass_filters_table.setColumnCount(2)
+        # self.all_pass_filters_table.setHorizontalHeaderLabels(['Column 1', 'Column 2'])
+        # self.all_pass_filters_widget_layout.addWidget(self.all_pass_filters_table)
+        # self.all_pass_filters_table.horizontalHeader().setStretchLastSection(True)
+        # self.all_pass_filters_table.horizontalHeader().setSectionResizeMode(0, 1)  # Resize first column
+        # self.all_pass_filters_table.horizontalHeader().setSectionResizeMode(1, 1)  # Resize second column
+
+        self.all_pass_filters_table = CustomTable()
+        self.all_pass_filters_widget_layout.addWidget(self.all_pass_filters_table)
+      
+
+        # self.all_pass_filter_inputs_container = QWidget()
+        # self.all_pass_filter_inputs_container_layout = QHBoxLayout(self.all_pass_filter_inputs_container)
+        # self.all_pass_filters_widget_layout.addWidget(self.all_pass_filter_inputs_container)
+
+        # self.real_part_label = QLabel("real")
+        # self.imaginary_part_label = QLabel("imag")
+        # self.real_part_spin = QDoubleSpinBox()
+        # self.real_part_spin.setValue(0)
+        # self.real_part_spin.setDecimals(2)
+        # self.real_part_spin.setSingleStep(0.1)
+        # self.imaginary_part_spin = QDoubleSpinBox()
+        # self.imaginary_part_spin.setValue(0)
+        # self.imaginary_part_spin.setDecimals(2)
+        # self.imaginary_part_spin.setSingleStep(0.1)
+        # self.all_pass_filter_inputs_container_layout.addWidget(self.real_part_label)
+        # self.all_pass_filter_inputs_container_layout.addWidget(self.real_part_spin)
+        # self.all_pass_filter_inputs_container_layout.addWidget(self.imaginary_part_label)
+        # self.all_pass_filter_inputs_container_layout.addWidget(self.imaginary_part_spin)
+        # self.add_all_pass_filter_button = QPushButton("Add")
+        # self.all_pass_filter_inputs_container_layout.addWidget(self.add_all_pass_filter_button)
+
+        # self.real_part_spin.setButtonSymbols(QSpinBox.NoButtons)
+        # self.imaginary_part_spin.setButtonSymbols(QSpinBox.NoButtons)
+
+
+        self.all_pass_filter_phase_response = ResponsePlot()
+        self.all_pass_filters_widget_layout.addWidget(self.all_pass_filter_phase_response)
+
+        self.all_pass_filter_z_plane = CustomZPlane()
+        self.all_pass_filters_widget_layout.addWidget(self.all_pass_filter_z_plane)
 
 
         self.setStyleSheet("""
