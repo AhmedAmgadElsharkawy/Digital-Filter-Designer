@@ -5,6 +5,7 @@ from view.custom_z_plane import CustomZPlane
 from view.response_plot import ResponsePlot
 from view.custom_double_spin_box import CustomDoubleSpinBox
 from view.custom_table import CustomTable
+from view.padding_area import PaddingArea
 
 
 class MainWindow(QMainWindow):
@@ -224,7 +225,9 @@ class MainWindow(QMainWindow):
         self.signal_plots_container_layout.addWidget(self.filtered_signal_plot)
         
         
-
+        self.padding_area = PaddingArea()
+        self.signal_plots_container_layout.addWidget(self.padding_area)
+        self.padding_area.setFixedSize(300,300)
 
 
 
