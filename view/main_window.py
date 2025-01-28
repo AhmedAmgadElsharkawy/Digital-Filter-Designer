@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QMainWindow,QTableWidget,QWidget,QHBoxLayout,QVBoxLayout,QLabel,QPushButton,QComboBox,QSpinBox,QDoubleSpinBox
+from PyQt5.QtWidgets import QMainWindow,QSlider,QWidget,QHBoxLayout,QVBoxLayout,QLabel,QPushButton,QComboBox,QSpinBox,QDoubleSpinBox
 import pyqtgraph as pg
+from PyQt5.QtCore import Qt
 
 from view.custom_z_plane import CustomZPlane
 from view.response_plot import ResponsePlot
@@ -94,8 +95,8 @@ class MainWindow(QMainWindow):
         self.filter_row_layout.setContentsMargins(0,0,0,0)
         self.left_container_layout.addWidget(self.filter_row)
         
-        self.custom_z_plane = CustomZPlane()
-        self.filter_row_layout.addWidget(self.custom_z_plane)
+        self.filter_custom_z_plane = CustomZPlane()
+        self.filter_row_layout.addWidget(self.filter_custom_z_plane)
 
         self.filter_response_plots_widget = QWidget()
         self.filter_response_plots_widget_layout = QVBoxLayout(self.filter_response_plots_widget)
@@ -193,15 +194,25 @@ class MainWindow(QMainWindow):
         self.all_pass_filters_widget_layout.addWidget(self.apply_all_pass_filter_button)
         
         
-        self.signal_row = QWidget()
-        self.signal_row_layout = QHBoxLayout(self.signal_row)
-        self.left_container_layout.addWidget(self.signal_row)
-        self.signal_row_layout.setContentsMargins(0,0,0,0)
+        self.second_row = QWidget()
+        self.second_row_layout = QHBoxLayout(self.second_row)
+        self.left_container_layout.addWidget(self.second_row)
+        self.second_row_layout.setContentsMargins(0,0,0,0)
+
+        self.signal_widgets_container = QWidget()
+        self.signal_widgets_container_layout = QVBoxLayout(self.signal_widgets_container)
+        self.signal_widgets_container_layout.setContentsMargins(0,0,0,0)
+        self.second_row_layout.addWidget(self.signal_widgets_container)
+        
+        self.signal_container_first_row = QWidget()
+        self.signal_container_first_row_layout = QHBoxLayout(self.signal_container_first_row)
+        self.signal_container_first_row_layout.setContentsMargins(0,0,0,0)
+        self.signal_widgets_container_layout.addWidget(self.signal_container_first_row)
         
         self.signal_plots_container = QWidget()
         self.signal_plots_container_layout = QVBoxLayout(self.signal_plots_container)
         self.signal_plots_container_layout.setContentsMargins(0,0,0,0)
-        self.signal_row_layout.addWidget(self.signal_plots_container)
+        self.signal_container_first_row_layout.addWidget(self.signal_plots_container)
 
         self.signal_plot = pg.PlotWidget()
         self.signal_plot.setTitle("Signal Plot", color="k", size="8pt")
@@ -226,12 +237,52 @@ class MainWindow(QMainWindow):
         
         
         self.padding_area = PaddingArea()
-        self.signal_plots_container_layout.addWidget(self.padding_area)
-        self.padding_area.setFixedSize(300,300)
+        self.signal_container_first_row_layout.addWidget(self.padding_area)
+        self.padding_area.setFixedSize(400,400)
+
+
+        self.signal_controls_widget = QWidget()
+        self.signal_controls_widget_layout = QHBoxLayout(self.signal_controls_widget)
+        self.signal_controls_widget_layout.setContentsMargins(0,0,0,0)
+        self.signal_widgets_container_layout.addWidget(self.signal_controls_widget)
+
+        self.import_signal_button = QPushButton("Import")
+        self.signal_controls_widget_layout.addWidget(self.import_signal_button)
+        self.signal_controls_widget_layout.addStretch()
+
+        self.slider_container = QWidget()
+        self.slider_container_layout = QHBoxLayout(self.slider_container)
+        self.slider_container_layout.setContentsMargins(0,0,0,0)
+        self.signal_controls_widget_layout.addWidget(self.slider_container)
+
+        self.filter_speed_label = QLabel("Filter Speed Value: 50", self)
+        self.filter_speed_label.setAlignment(Qt.AlignCenter)
+
+        self.filter_speed_slider = QSlider(Qt.Horizontal)
+        self.filter_speed_slider.setMinimum(0)
+        self.filter_speed_slider.setMaximum(100)
+        self.filter_speed_slider.setValue(50)
+        self.filter_speed_slider.setTickPosition(QSlider.TicksBelow)
+        self.filter_speed_slider.setTickInterval(10)  
+        self.filter_speed_slider.setSingleStep(5)  
+
+        self.filter_speed_slider.valueChanged.connect(self.update_label)
+
+        self.slider_container_layout.addWidget(self.filter_speed_label)
+        self.slider_container_layout.addWidget(self.filter_speed_slider)
+
+
+        
+
+
 
 
         self.structure_code_viewer = CustomStackedWidget()
-        self.signal_row_layout.addWidget(self.structure_code_viewer)
+        self.second_row_layout.addWidget(self.structure_code_viewer)
+
+        self.filter_row.setFixedHeight(400)
+        self.filter_custom_z_plane.setFixedWidth(400)
+        self.second_row.setFixedHeight(400)
         
 
 
@@ -239,3 +290,6 @@ class MainWindow(QMainWindow):
         self.setStyleSheet("""
             
         """)
+
+    def update_label(self, value):
+        self.filter_speed_label.setText(f"Filter Speed Value: {value}")  # Update label text
