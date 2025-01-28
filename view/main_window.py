@@ -6,13 +6,13 @@ from view.response_plot import ResponsePlot
 from view.custom_double_spin_box import CustomDoubleSpinBox
 from view.custom_table import CustomTable
 from view.padding_area import PaddingArea
+from view.custom_stacked_widget import CustomStackedWidget
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('Fingerprint')
-        self.setGeometry(300,300,1300, 500)
+        self.setWindowTitle('Digital Filter Designer')
 
         self.main_widget = QWidget(self)
         self.setCentralWidget(self.main_widget)
@@ -228,6 +228,11 @@ class MainWindow(QMainWindow):
         self.padding_area = PaddingArea()
         self.signal_plots_container_layout.addWidget(self.padding_area)
         self.padding_area.setFixedSize(300,300)
+
+
+        self.structure_code_viewer = CustomStackedWidget()
+        self.signal_row_layout.addWidget(self.structure_code_viewer)
+        
 
 
 
