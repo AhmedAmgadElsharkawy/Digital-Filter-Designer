@@ -20,10 +20,22 @@ class MainWindow(QMainWindow):
 
         self.controls_widget = QWidget()
         self.controls_widget_layout = QHBoxLayout(self.controls_widget)
+        self.controls_widget_layout.setContentsMargins(0,0,0,0)
         self.main_widget_layout.addWidget(self.controls_widget)
+
+        self.save_load_widget = QWidget()
+        self.save_load_widget_layout = QHBoxLayout(self.save_load_widget)
+        self.save_load_widget_layout.setContentsMargins(0,0,0,0)
+        self.controls_widget_layout.addWidget(self.save_load_widget)
+        self.save_filter_button = QPushButton("Save")
+        self.load_filter_button = QPushButton("Load")
+        self.save_load_widget_layout.addWidget(self.save_filter_button)
+        self.save_load_widget_layout.addWidget(self.load_filter_button)
+        
 
         self.poles_zeroes_widget = QWidget()
         self.poles_zeroes_widget_layout = QHBoxLayout(self.poles_zeroes_widget)
+        self.poles_zeroes_widget_layout.setContentsMargins(0,0,0,0)
         self.controls_widget_layout.addWidget(self.poles_zeroes_widget)
         self.pole_button = QPushButton("pole")
         self.zero_button = QPushButton("zero")
@@ -37,6 +49,7 @@ class MainWindow(QMainWindow):
 
         self.swap_controls_widget = QWidget()
         self.swap_controls_widget_layout = QHBoxLayout(self.swap_controls_widget)
+        self.swap_controls_widget_layout.setContentsMargins(0,0,0,0)
         self.controls_widget_layout.addWidget(self.swap_controls_widget)
         self.swap_poles_button = QPushButton("Swap poles")
         self.swap_zeroes_button = QPushButton("Swap Zeroes")
@@ -45,6 +58,7 @@ class MainWindow(QMainWindow):
 
         self.clear_controls_widget = QWidget()
         self.clear_controls_widget_layout = QHBoxLayout(self.clear_controls_widget)
+        self.clear_controls_widget_layout.setContentsMargins(0,0,0,0)
         self.controls_widget_layout.addWidget(self.clear_controls_widget)
         self.clear_poles_button = QPushButton("Clear Poles")
         self.clear_zeroes_button = QPushButton("Clear Zeroes")
@@ -55,6 +69,7 @@ class MainWindow(QMainWindow):
 
         self.undo_redo_widget = QWidget()
         self.undo_redo_widget_layout = QHBoxLayout(self.undo_redo_widget)
+        self.undo_redo_widget_layout.setContentsMargins(0,0,0,0)
         self.controls_widget_layout.addWidget(self.undo_redo_widget)
         self.undo_button = QPushButton("Undo")
         self.redo_button = QPushButton("Redo")
@@ -64,14 +79,17 @@ class MainWindow(QMainWindow):
         
         self.bottom_container = QWidget()
         self.bottom_container_layout = QHBoxLayout(self.bottom_container)
+        self.bottom_container_layout.setContentsMargins(0,0,0,0)
         self.main_widget_layout.addWidget(self.bottom_container)
 
         self.left_container = QWidget()
         self.left_container_layout = QVBoxLayout(self.left_container)
+        self.left_container_layout.setContentsMargins(0,0,0,0)
         self.bottom_container_layout.addWidget(self.left_container)
 
         self.filter_row = QWidget()
         self.filter_row_layout = QHBoxLayout(self.filter_row) 
+        self.filter_row_layout.setContentsMargins(0,0,0,0)
         self.left_container_layout.addWidget(self.filter_row)
         
         self.custom_z_plane = CustomZPlane()
@@ -79,6 +97,7 @@ class MainWindow(QMainWindow):
 
         self.filter_response_plots_widget = QWidget()
         self.filter_response_plots_widget_layout = QVBoxLayout(self.filter_response_plots_widget)
+        self.filter_response_plots_widget_layout.setContentsMargins(0,0,0,0)
         self.filter_row_layout.addWidget(self.filter_response_plots_widget)
         self.filter_magnitude_response = ResponsePlot(title="Magnitude Response",xlabel='Normalized Frequency (xπ rad/sample)',ylabel='Magnitude')
         self.filter_phase_response = ResponsePlot(title="Phase Response", xlabel='Normalized Frequency (xπ rad/sample)',ylabel='Phase (radians)')
@@ -156,6 +175,7 @@ class MainWindow(QMainWindow):
         
         self.all_pass_filters_widget = QWidget()
         self.all_pass_filters_widget_layout = QVBoxLayout(self.all_pass_filters_widget)
+        self.all_pass_filters_widget_layout.setContentsMargins(0,0,0,0)
         self.right_widget_layout.addWidget(self.all_pass_filters_widget)
 
         # self.all_pass_filters_table = QTableWidget()
@@ -166,8 +186,6 @@ class MainWindow(QMainWindow):
         # self.all_pass_filters_table.horizontalHeader().setSectionResizeMode(0, 1)  # Resize first column
         # self.all_pass_filters_table.horizontalHeader().setSectionResizeMode(1, 1)  # Resize second column
 
-        self.all_pass_filters_table = CustomTable()
-        self.all_pass_filters_widget_layout.addWidget(self.all_pass_filters_table)
       
 
         # self.all_pass_filter_inputs_container = QWidget()
@@ -195,11 +213,19 @@ class MainWindow(QMainWindow):
         # self.imaginary_part_spin.setButtonSymbols(QSpinBox.NoButtons)
 
 
+        self.all_pass_filters_table = CustomTable()
+        self.all_pass_filters_table.setFixedHeight(300)
         self.all_pass_filter_phase_response = ResponsePlot()
-        self.all_pass_filters_widget_layout.addWidget(self.all_pass_filter_phase_response)
-
         self.all_pass_filter_z_plane = CustomZPlane()
+        self.apply_all_pass_filter_button = QPushButton("Apply The Filter")
         self.all_pass_filters_widget_layout.addWidget(self.all_pass_filter_z_plane)
+        self.all_pass_filters_widget_layout.addWidget(self.all_pass_filter_phase_response)
+        self.all_pass_filters_widget_layout.addWidget(self.all_pass_filters_table)
+        self.all_pass_filters_widget_layout.addWidget(self.apply_all_pass_filter_button)
+        
+        
+
+
 
 
         self.setStyleSheet("""

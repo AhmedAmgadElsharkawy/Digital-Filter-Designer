@@ -9,8 +9,10 @@ class CustomTable(QWidget):
     def __init__(self):
         super().__init__()
         self.main_layout = QVBoxLayout()
+        self.main_layout.setContentsMargins(0,0,0,0)
 
         self.input_layout = QHBoxLayout()
+        self.input_layout.setContentsMargins(0,0,0,0)
 
         self.real_part_spin = QDoubleSpinBox()
         self.real_part_spin.setMinimum(-1000.0)
@@ -36,7 +38,6 @@ class CustomTable(QWidget):
         self.add_button.clicked.connect(self.add_to_table)
         self.input_layout.addWidget(self.add_button)
 
-        self.main_layout.addLayout(self.input_layout)
 
         self.table = QTableWidget()
         self.table.setColumnCount(2)
@@ -44,7 +45,9 @@ class CustomTable(QWidget):
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.horizontalHeader().setSectionResizeMode(0, 1) 
         self.table.horizontalHeader().setSectionResizeMode(1, 1) 
+
         self.main_layout.addWidget(self.table)
+        self.main_layout.addLayout(self.input_layout)
 
         self.setLayout(self.main_layout)
 

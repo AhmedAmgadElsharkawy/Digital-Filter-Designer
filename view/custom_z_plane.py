@@ -13,7 +13,7 @@ class CustomZPlane(QGraphicsView):
 
         self.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        self.scene.setSceneRect(-200, -200, 400, 400)
+        self.scene.setSceneRect(-120, -120, 240, 240)
         self.unit_circle = QGraphicsEllipseItem(-100, -100, 200, 200)
         self.unit_circle.setPen(QPen(Qt.GlobalColor.gray, 2))
         self.scene.addItem(self.unit_circle)
