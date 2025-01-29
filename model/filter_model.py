@@ -44,17 +44,18 @@ class FilterModel:
             return 
         
 
-    def clear_all_polses(self):
+    def clear_poles(self):
         self.poles = []
         self.conj_poles = []
-    
-    def clear_all_zeroes(self):
+
+    def clear_zeroes(self):
         self.zeroes = []
         self.conj_zeroes = []
 
     def clear_all_poles_and_zeores(self):
-        self.clear_all_polses()
-        self.clear_all_zeroes()
+        self.clear_poles()
+        self.clear_zeroes()
+        
 
     
 

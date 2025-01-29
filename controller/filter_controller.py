@@ -11,9 +11,12 @@ class FilterController():
 
     def clear_poles(self):
         self.main_window.filter_z_plane.clear_poles_graphical_items()
+        self.main_window.filter_model.clear_poles()
 
     def clear_zeores(self):
         self.main_window.filter_z_plane.clear_zeroes_graphical_items()
+        self.main_window.filter_model.clear_zeroes()
 
     def clear_all_poles_and_zeroes(self):
         self.main_window.filter_z_plane.clear_all_graphical_items()
+        self.main_window.filter_model.clear_all_poles_and_zeores()
