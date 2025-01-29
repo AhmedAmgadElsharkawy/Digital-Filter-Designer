@@ -20,13 +20,12 @@ class InteractiveZPlane(ZPlane):
                 self.setCursor(Qt.ClosedHandCursor)
             else:
                 graphical_item_type = self.main_window.complex_type
-
-                if graphical_item_type == "Pole" or graphical_item_type == "Zero":
+                x, y = position.x(), -position.y()
+                complex_value = complex(x / 100, y / 100)
+                if graphical_item_type == "Pole" or graphical_item_type == "Zero" or complex_value.imag == 0:
                     self.add_graphical_item(position)
                 else:
                     self.add_graphical_conjugate_items(position)
-                x, y = position.x(), -position.y()
-                complex_value = complex(x / 100, y / 100)
 
                 if graphical_item_type == "Pole":
                     self.main_window.filter_model.add_pole(complex_value)
