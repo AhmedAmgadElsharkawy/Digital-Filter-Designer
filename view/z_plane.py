@@ -4,7 +4,7 @@ from PyQt5.QtGui import QPen, QPainter
 import math
 
 
-class CustomZPlane(QGraphicsView):
+class ZPlane(QGraphicsView):
     def __init__(self):
         super().__init__()
 
@@ -23,9 +23,7 @@ class CustomZPlane(QGraphicsView):
         self.add_labels()
 
         self.poles = []
-        self.dragging_pole = None
 
-        self.setMouseTracking(True)
         self.fit_to_view()
 
     def fit_to_view(self):
@@ -83,46 +81,13 @@ class CustomZPlane(QGraphicsView):
             label.setPos(x - label_width / 2, y - label_height / 2)
             self.scene.addItem(label)
 
-    def mousePressEvent(self, event):
-        position = self.mapToScene(event.pos())
-
-        if event.button() == Qt.MouseButton.LeftButton:
-            clicked_pole = self.get_pole_at_position(position)
-            if clicked_pole:
-                self.dragging_pole = clicked_pole
-                self.setCursor(Qt.ClosedHandCursor)  # Change cursor to closed hand
-            else:
-                self.add_pole(position)
-        elif event.button() == Qt.MouseButton.RightButton:
-            self.remove_pole(position)
-
-    def mouseMoveEvent(self, event):
-        position = self.mapToScene(event.pos())
-
-        if self.dragging_pole:
-            bounding_rect = self.dragging_pole.boundingRect()
-            x_offset = bounding_rect.width() / 2
-            y_offset = bounding_rect.height() / 2
-            self.dragging_pole.setPos(position.x() - x_offset, position.y() - y_offset)
-        else:
-            hovered_pole = self.get_pole_at_position(position)
-            if hovered_pole:
-                self.setCursor(Qt.OpenHandCursor)  # Change cursor to open hand when hovering
-            else:
-                self.setCursor(Qt.ArrowCursor)  # Default cursor
-
-    def mouseReleaseEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton:
-            self.dragging_pole = None
-            self.setCursor(Qt.ArrowCursor)  # Revert to default cursor
-
 
     def add_pole(self, position):
         pole = QGraphicsTextItem("X")
         pole.setDefaultTextColor(Qt.GlobalColor.black)
         
         font = pole.font()
-        font.setPointSize(7)  # Adjust this value to control the size of the pole
+        font.setPointSize(7)
         pole.setFont(font)
 
         bounding_rect = pole.boundingRect()
@@ -133,7 +98,6 @@ class CustomZPlane(QGraphicsView):
 
         self.scene.addItem(pole)
         self.poles.append(pole)
-
 
     def remove_pole(self, position):
         clicked_pole = self.get_pole_at_position(position)

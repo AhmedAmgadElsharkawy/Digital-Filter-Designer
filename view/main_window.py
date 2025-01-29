@@ -4,12 +4,13 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
 
-from view.custom_z_plane import CustomZPlane
+from view.z_plane import ZPlane
 from view.response_plot import ResponsePlot
 from view.custom_double_spin_box import CustomDoubleSpinBox
 from view.custom_table import CustomTable
 from view.padding_area import PaddingArea
 from view.custom_stacked_widget import CustomStackedWidget
+from view.interactive_z_plane import InteractiveZPlane
 
 
 class MainWindow(QMainWindow):
@@ -116,7 +117,7 @@ class MainWindow(QMainWindow):
         # self.filter_row_layout.setContentsMargins(0,0,0,0)
         self.left_container_layout.addWidget(self.first_row)
         
-        self.filter_custom_z_plane = CustomZPlane()
+        self.filter_custom_z_plane = InteractiveZPlane()
         self.first_row_layout.addWidget(self.filter_custom_z_plane)
 
         self.filter_response_plots_widget = QWidget()
@@ -216,7 +217,7 @@ class MainWindow(QMainWindow):
 
         self.all_pass_filters_table = CustomTable()
         self.all_pass_filter_phase_response = ResponsePlot(title="All Pass Filter Phase Response")
-        self.all_pass_filter_z_plane = CustomZPlane()
+        self.all_pass_filter_z_plane = ZPlane()
         self.apply_all_pass_filter_button = QPushButton("Apply The Filter")
         self.all_pass_filters_widget_layout.addWidget(self.all_pass_filter_label)
         self.all_pass_filters_widget_layout.addWidget(self.all_pass_filter_z_plane)
