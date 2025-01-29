@@ -112,6 +112,7 @@ class MainWindow(QMainWindow):
         self.first_row = QWidget()
         self.first_row.setObjectName("filter_row")
         self.first_row_layout = QHBoxLayout(self.first_row) 
+        self.first_row_layout.setSpacing(10)
         # self.filter_row_layout.setContentsMargins(0,0,0,0)
         self.left_container_layout.addWidget(self.first_row)
         
@@ -239,6 +240,7 @@ class MainWindow(QMainWindow):
         self.signal_container_first_row = QWidget()
         self.signal_container_first_row.setObjectName("signal_container_first_row")
         self.signal_container_first_row_layout = QHBoxLayout(self.signal_container_first_row)
+        self.signal_container_first_row_layout.setSpacing(10)
         # self.signal_container_first_row_layout.setContentsMargins(0,0,0,0)
         self.signal_widgets_container_layout.addWidget(self.signal_container_first_row)
         
