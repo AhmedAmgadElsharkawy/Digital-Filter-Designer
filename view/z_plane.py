@@ -138,4 +138,24 @@ class ZPlane(QGraphicsView):
             if pole.sceneBoundingRect().contains(position):
                 return pole
         return None
+    
+    def clear_poles_graphical_items(self):
+        items_to_remove = [item for item, data in self.graphical_items.items() if data["type"] == "Pole" or data["type"] == "Conj Poles"]
+        
+        for item in items_to_remove:
+            self.scene.removeItem(item)
+            del self.graphical_items[item]
 
+    def clear_zeroes_graphical_items(self):
+        items_to_remove = [item for item, data in self.graphical_items.items() if data["type"] == "Zero" or data["type"] == "Conj Zeroes"]
+        
+        for item in items_to_remove:
+            self.scene.removeItem(item)
+            del self.graphical_items[item]
+
+    def clear_all_graphical_items(self):
+        items_to_remove = list(self.graphical_items.keys())
+        
+        for item in items_to_remove:
+            self.scene.removeItem(item)
+            del self.graphical_items[item]

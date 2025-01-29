@@ -14,6 +14,8 @@ from view.interactive_z_plane import InteractiveZPlane
 
 from model.filter_model import FilterModel
 
+from controller.filter_controller import FilterController
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -128,8 +130,8 @@ class MainWindow(QMainWindow):
         # self.filter_row_layout.setContentsMargins(0,0,0,0)
         self.left_container_layout.addWidget(self.first_row)
         
-        self.filter_custom_z_plane = InteractiveZPlane(self)
-        self.first_row_layout.addWidget(self.filter_custom_z_plane)
+        self.filter_z_plane = InteractiveZPlane(self)
+        self.first_row_layout.addWidget(self.filter_z_plane)
 
         self.filter_response_plots_widget = QWidget()
         self.filter_response_plots_widget_layout = QVBoxLayout(self.filter_response_plots_widget)
@@ -330,11 +332,13 @@ class MainWindow(QMainWindow):
         self.structure_code_viewer = CustomStackedWidget()
         self.second_row_layout.addWidget(self.structure_code_viewer)
 
-        self.filter_custom_z_plane.setFixedWidth(440)
+        self.filter_z_plane.setFixedWidth(440)
         self.right_widget.setFixedWidth(300)
         self.all_pass_filter_z_plane.setFixedHeight(200)
         self.all_pass_filter_phase_response.setFixedHeight(200)
         self.all_pass_filters_table.setFixedHeight(240)
+
+        self.filter_controller = FilterController(self)
 
         
 
