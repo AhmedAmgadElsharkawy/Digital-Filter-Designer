@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QSplitter,QMainWindow,QSlider,QWidget,QHBoxLayout,QVBoxLayout,QLabel,QPushButton,QComboBox,QSpinBox,QDoubleSpinBox
+from PyQt5.QtWidgets import QMainWindow,QSlider,QWidget,QHBoxLayout,QVBoxLayout,QLabel,QPushButton,QComboBox,QSpinBox,QDoubleSpinBox
 import pyqtgraph as pg
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
@@ -12,10 +12,15 @@ from view.padding_area import PaddingArea
 from view.custom_stacked_widget import CustomStackedWidget
 from view.interactive_z_plane import InteractiveZPlane
 
+from model.filter_model import FilterModel
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        
+        self.filter_model = FilterModel()
+
         self.setWindowTitle('Digital Filter Designer')
 
         self.main_widget = QWidget(self)
@@ -117,7 +122,7 @@ class MainWindow(QMainWindow):
         # self.filter_row_layout.setContentsMargins(0,0,0,0)
         self.left_container_layout.addWidget(self.first_row)
         
-        self.filter_custom_z_plane = InteractiveZPlane()
+        self.filter_custom_z_plane = InteractiveZPlane(self.filter_model)
         self.first_row_layout.addWidget(self.filter_custom_z_plane)
 
         self.filter_response_plots_widget = QWidget()

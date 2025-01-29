@@ -22,8 +22,7 @@ class ZPlane(QGraphicsView):
         self.draw_radial_lines()
         self.add_labels()
 
-        self.poles = []  
-        self.pole_items = {}
+        self.pole_graphical_items = {}
 
         self.fit_to_view()
 
@@ -82,39 +81,35 @@ class ZPlane(QGraphicsView):
             label.setPos(x - label_width / 2, y - label_height / 2)
             self.scene.addItem(label)
 
-    def add_pole(self, position):
+    def add_pole_graphically(self, position):
         x, y = position.x(), -position.y()
         pole_complex = complex(x / 100, y / 100)
 
-        pole = QGraphicsTextItem("X")
-        pole.setDefaultTextColor(Qt.GlobalColor.black)
+        pole_graphical_item = QGraphicsTextItem("X")
+        pole_graphical_item.setDefaultTextColor(Qt.GlobalColor.black)
 
-        font = pole.font()
+        font = pole_graphical_item.font()
         font.setPointSize(7)
-        pole.setFont(font)
+        pole_graphical_item.setFont(font)
 
-        bounding_rect = pole.boundingRect()
+        bounding_rect = pole_graphical_item.boundingRect()
         x_offset = bounding_rect.width() / 2
         y_offset = bounding_rect.height() / 2
-        pole.setPos(x - x_offset, position.y() - y_offset)
+        pole_graphical_item.setPos(x - x_offset, position.y() - y_offset)
 
-        self.scene.addItem(pole)
+        self.scene.addItem(pole_graphical_item)
 
-        self.poles.append(pole_complex)
-        self.pole_items[pole] = pole_complex
-
-
-    def remove_pole(self, position):
-        clicked_pole = self.get_pole_at_position(position)
-        if clicked_pole:
-            self.scene.removeItem(clicked_pole)
-            pole_complex = self.pole_items.pop(clicked_pole, None)
-            if pole_complex in self.poles:
-                self.poles.remove(pole_complex)
+        self.pole_graphical_items[pole_graphical_item] = pole_complex
 
 
-    def get_pole_at_position(self, position):
-        for pole in self.pole_items.keys():
+    def remove_pole_graphically(self, pole_graphical_item):
+        if pole_graphical_item:
+            self.scene.removeItem(pole_graphical_item)
+            del self.pole_graphical_items[pole_graphical_item]
+
+
+    def get_pole_graphical_item_at_position(self, position):
+        for pole in self.pole_graphical_items.keys():
             if pole.sceneBoundingRect().contains(position):
                 return pole
         return None
