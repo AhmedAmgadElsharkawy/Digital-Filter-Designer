@@ -47,7 +47,7 @@ class InteractiveZPlane(ZPlane):
                 self.main_window.filter_model.remove_conj_poles(self.graphical_items[graphical_item]["complex value"])
             if graphical_item_type == "Conj Zeroes":
                 self.main_window.filter_model.remove_conj_zeroes(self.graphical_items[graphical_item]["complex value"])
-            self.remove_graphical_item(graphical_item)
+            self.remove_graphical_item(position)
 
     def mouseMoveEvent(self, event):
         position = self.mapToScene(event.pos())

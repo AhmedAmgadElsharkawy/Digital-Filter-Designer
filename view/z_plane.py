@@ -123,15 +123,16 @@ class ZPlane(QGraphicsView):
             self.graphical_items[original_item]['conjugate'] = conjugate_item
             self.graphical_items[conjugate_item]['conjugate'] = original_item
 
-    def remove_graphical_item(self, pole_graphical_item):
-        if pole_graphical_item:
-            conjugate_item = self.graphical_items.get(pole_graphical_item, {}).get('conjugate')
+    def remove_graphical_item(self, position):
+        graphical_item = self.get_graphical_item_at_position(position)
+        if graphical_item:
+            conjugate_item = self.graphical_items.get(graphical_item, {}).get('conjugate')
             if conjugate_item:
                 self.scene.removeItem(conjugate_item)
                 del self.graphical_items[conjugate_item]
 
-            self.scene.removeItem(pole_graphical_item)
-            del self.graphical_items[pole_graphical_item]
+            self.scene.removeItem(graphical_item)
+            del self.graphical_items[graphical_item]
 
     def get_graphical_item_at_position(self, position):
         for pole in self.graphical_items.keys():
