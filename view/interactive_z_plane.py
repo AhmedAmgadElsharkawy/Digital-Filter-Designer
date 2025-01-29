@@ -28,7 +28,6 @@ class InteractiveZPlane(ZPlane):
                 x, y = position.x(), -position.y()
                 complex_value = complex(x / 100, y / 100)
 
-                self.main_window.filter_model.add_pole(complex_value)
                 if graphical_item_type == "Pole":
                     self.main_window.filter_model.add_pole(complex_value)
                 if graphical_item_type == "Zero":
