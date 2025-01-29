@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         
         self.filter_model = FilterModel()
 
-        self.complex_type = "pole"
+        self.complex_type = "Pole"
 
         self.setWindowTitle('Digital Filter Designer')
 
@@ -54,10 +54,10 @@ class MainWindow(QMainWindow):
         self.poles_zeroes_widget_layout = QHBoxLayout(self.poles_zeroes_widget)
         self.poles_zeroes_widget_layout.setContentsMargins(0,0,0,0)
         self.controls_widget_layout.addWidget(self.poles_zeroes_widget)
-        self.pole_button = QPushButton("pole")
-        self.zero_button = QPushButton("zero")
-        self.conjugate_poles_button = QPushButton("conj poles")
-        self.conjugate_zeroes_button = QPushButton("conj zeroes")
+        self.pole_button = QPushButton("Pole")
+        self.zero_button = QPushButton("Zero")
+        self.conjugate_poles_button = QPushButton("Conj Poles")
+        self.conjugate_zeroes_button = QPushButton("Conj Zeroes")
         self.pole_button.clicked.connect(self.choose_complex_type)
         self.zero_button.clicked.connect(self.choose_complex_type)
         self.conjugate_poles_button.clicked.connect(self.choose_complex_type)
@@ -128,7 +128,7 @@ class MainWindow(QMainWindow):
         # self.filter_row_layout.setContentsMargins(0,0,0,0)
         self.left_container_layout.addWidget(self.first_row)
         
-        self.filter_custom_z_plane = InteractiveZPlane(self.filter_model)
+        self.filter_custom_z_plane = InteractiveZPlane(self)
         self.first_row_layout.addWidget(self.filter_custom_z_plane)
 
         self.filter_response_plots_widget = QWidget()
@@ -228,7 +228,7 @@ class MainWindow(QMainWindow):
 
         self.all_pass_filters_table = CustomTable()
         self.all_pass_filter_phase_response = ResponsePlot(title="All Pass Filter Phase Response")
-        self.all_pass_filter_z_plane = ZPlane()
+        self.all_pass_filter_z_plane = ZPlane(self)
         self.apply_all_pass_filter_button = QPushButton("Apply The Filter")
         self.all_pass_filters_widget_layout.addWidget(self.all_pass_filter_label)
         self.all_pass_filters_widget_layout.addWidget(self.all_pass_filter_z_plane)

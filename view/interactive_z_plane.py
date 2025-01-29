@@ -3,16 +3,21 @@ from view.z_plane import ZPlane
 
 
 class InteractiveZPlane(ZPlane):
-    def __init__(self,filter_model):
-        super().__init__()
-
-        self.filter_model = filter_model
+    def __init__(self,main_window):
+        super().__init__(main_window)
 
         self.dragging_pole = None
         self.setMouseTracking(True)
 
     def mousePressEvent(self, event):
         position = self.mapToScene(event.pos())
+
+        graphical_item_shape = ''
+        if self.main_window.complex_type == "Pole" or self.main_window.complex_type == "Conj Poles":
+            graphical_item_shape = 'X'
+        else:
+            graphical_item_shape = 'O'
+
         pole_graphical_item = self.get_pole_graphical_item_at_position(position)
 
         if event.button() == Qt.MouseButton.LeftButton:
@@ -20,10 +25,10 @@ class InteractiveZPlane(ZPlane):
                 self.dragging_pole = pole_graphical_item
                 self.setCursor(Qt.ClosedHandCursor)  # Change cursor to closed hand
             else:
-                self.add_pole_graphically(position)
+                self.add_pole_graphically(position,graphical_item_shape)
                 x, y = position.x(), -position.y()
                 pole_complex = complex(x / 100, y / 100)
-                self.filter_model.add_pole(pole_complex)
+                self.main_window.filter_model.add_pole(pole_complex)
                 
         if event.button() == Qt.MouseButton.RightButton and pole_graphical_item:
             self.filter_model.remove_pole(self.pole_graphical_items[pole_graphical_item])

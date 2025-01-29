@@ -5,8 +5,10 @@ import math
 
 
 class ZPlane(QGraphicsView):
-    def __init__(self):
+    def __init__(self,main_window):
         super().__init__()
+
+        self.main_window = main_window
 
         self.scene = QGraphicsScene()
         self.setScene(self.scene)
@@ -81,11 +83,11 @@ class ZPlane(QGraphicsView):
             label.setPos(x - label_width / 2, y - label_height / 2)
             self.scene.addItem(label)
 
-    def add_pole_graphically(self, position):
+    def add_pole_graphically(self, position,graphical_item_shape):
         x, y = position.x(), -position.y()
         pole_complex = complex(x / 100, y / 100)
 
-        pole_graphical_item = QGraphicsTextItem("X")
+        pole_graphical_item = QGraphicsTextItem(graphical_item_shape)
         pole_graphical_item.setDefaultTextColor(Qt.GlobalColor.black)
 
         font = pole_graphical_item.font()
