@@ -31,10 +31,10 @@ class CustomTable(QWidget):
         self.imaginary_part_spin.setDecimals(2)
         self.imaginary_part_spin.setSingleStep(0.1)
         self.imaginary_part_spin.setButtonSymbols(QDoubleSpinBox.NoButtons)
-        self.input_layout.addWidget(QLabel("Imaginary:"))
+        self.input_layout.addWidget(QLabel("Imag:"))
         self.input_layout.addWidget(self.imaginary_part_spin)
 
-        self.add_button = QPushButton("Add to Table")
+        self.add_button = QPushButton("Add")
         self.add_button.clicked.connect(self.add_to_table)
         self.input_layout.addWidget(self.add_button)
 

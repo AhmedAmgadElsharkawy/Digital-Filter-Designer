@@ -52,7 +52,7 @@ class PaddingArea(QWidget):
                 painter.drawEllipse(point, 3, 3)
 
         painter.setPen(QColor(0, 0, 0))
-        painter.setFont(QFont('Arial', 14))
+        painter.setFont(QFont('Arial', 12))
         painter.drawText(10, 30, f"{self.frequency:.2f} Hz")
 
     def mouseMoveEvent(self, event):
