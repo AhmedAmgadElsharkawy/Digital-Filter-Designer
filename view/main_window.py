@@ -21,6 +21,8 @@ class MainWindow(QMainWindow):
         
         self.filter_model = FilterModel()
 
+        self.complex_type = "pole"
+
         self.setWindowTitle('Digital Filter Designer')
 
         self.main_widget = QWidget(self)
@@ -56,6 +58,10 @@ class MainWindow(QMainWindow):
         self.zero_button = QPushButton("zero")
         self.conjugate_poles_button = QPushButton("conj poles")
         self.conjugate_zeroes_button = QPushButton("conj zeroes")
+        self.pole_button.clicked.connect(self.choose_complex_type)
+        self.zero_button.clicked.connect(self.choose_complex_type)
+        self.conjugate_poles_button.clicked.connect(self.choose_complex_type)
+        self.conjugate_zeroes_button.clicked.connect(self.choose_complex_type)
         self.poles_zeroes_widget_layout.addWidget(self.pole_button)
         self.poles_zeroes_widget_layout.addWidget(self.zero_button)
         self.poles_zeroes_widget_layout.addWidget(self.conjugate_poles_button)
@@ -366,3 +372,17 @@ class MainWindow(QMainWindow):
 
     def update_label(self, value):
         self.filter_speed_label.setText(f"Filter Speed Value: {value}")  # Update label text
+
+    def choose_complex_type(self):
+        clicked_button = self.sender()
+        print(self.complex_type)
+        clicked_button.setDisabled(True)
+
+        if clicked_button != self.pole_button:
+            self.pole_button.setEnabled(True)
+        if clicked_button != self.zero_button:
+            self.zero_button.setEnabled(True)
+        if clicked_button != self.conjugate_poles_button:
+            self.conjugate_poles_button.setEnabled(True)
+        if clicked_button != self.conjugate_zeroes_button:
+            self.conjugate_zeroes_button.setEnabled(True)
