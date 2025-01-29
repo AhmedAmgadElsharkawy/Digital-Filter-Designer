@@ -22,7 +22,8 @@ class ZPlane(QGraphicsView):
         self.draw_radial_lines()
         self.add_labels()
 
-        self.poles = []
+        self.poles = []  
+        self.pole_items = {}
 
         self.fit_to_view()
 
@@ -81,11 +82,13 @@ class ZPlane(QGraphicsView):
             label.setPos(x - label_width / 2, y - label_height / 2)
             self.scene.addItem(label)
 
-
     def add_pole(self, position):
+        x, y = position.x(), -position.y()
+        pole_complex = complex(x / 100, y / 100)
+
         pole = QGraphicsTextItem("X")
         pole.setDefaultTextColor(Qt.GlobalColor.black)
-        
+
         font = pole.font()
         font.setPointSize(7)
         pole.setFont(font)
@@ -93,22 +96,26 @@ class ZPlane(QGraphicsView):
         bounding_rect = pole.boundingRect()
         x_offset = bounding_rect.width() / 2
         y_offset = bounding_rect.height() / 2
-
-        pole.setPos(position.x() - x_offset, position.y() - y_offset)
+        pole.setPos(x - x_offset, position.y() - y_offset)
 
         self.scene.addItem(pole)
-        self.poles.append(pole)
+
+        self.poles.append(pole_complex)
+        self.pole_items[pole] = pole_complex
+
 
     def remove_pole(self, position):
         clicked_pole = self.get_pole_at_position(position)
         if clicked_pole:
             self.scene.removeItem(clicked_pole)
-            self.poles.remove(clicked_pole)
+            pole_complex = self.pole_items.pop(clicked_pole, None)
+            if pole_complex in self.poles:
+                self.poles.remove(pole_complex)
+
 
     def get_pole_at_position(self, position):
-        for pole in self.poles:
-            bounding_rect = pole.sceneBoundingRect()
-            if bounding_rect.contains(position):
+        for pole in self.pole_items.keys():
+            if pole.sceneBoundingRect().contains(position):
                 return pole
         return None
 
