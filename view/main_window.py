@@ -375,7 +375,7 @@ class MainWindow(QMainWindow):
 
     def choose_complex_type(self):
         clicked_button = self.sender()
-        print(self.complex_type)
+        self.complex_type = clicked_button.text()
         clicked_button.setDisabled(True)
 
         if clicked_button != self.pole_button:
