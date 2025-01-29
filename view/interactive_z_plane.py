@@ -25,7 +25,7 @@ class InteractiveZPlane(ZPlane):
                 pole_complex = complex(x / 100, y / 100)
                 self.filter_model.add_pole(pole_complex)
                 
-        elif event.button() == Qt.MouseButton.RightButton:
+        if event.button() == Qt.MouseButton.RightButton and pole_graphical_item:
             self.filter_model.remove_pole(self.pole_graphical_items[pole_graphical_item])
             self.remove_pole_graphically(pole_graphical_item)
 
