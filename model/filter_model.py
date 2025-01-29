@@ -21,9 +21,15 @@ class FilterModel:
 
     def add_conj_poles(self,conj_poles):
         self.conj_poles.append(conj_poles)
+
+    def remove_conj_poles(self,conj_poles):
+        pass
     
     def add_conj_zeroes(self,conj_zeroes):
         self.conj_zeroes.append(conj_zeroes)
+
+    def remove_conj_zeroes(self,conj_zeroes):
+        pass
 
     def clear_all_polses(self):
         self.poles = []

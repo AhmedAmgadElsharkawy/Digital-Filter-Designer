@@ -5,7 +5,7 @@ import math
 
 
 class ZPlane(QGraphicsView):
-    def __init__(self,main_window):
+    def __init__(self, main_window):
         super().__init__()
 
         self.main_window = main_window
@@ -24,7 +24,7 @@ class ZPlane(QGraphicsView):
         self.draw_radial_lines()
         self.add_labels()
 
-        self.pole_graphical_items = {}
+        self.graphical_items = {}
 
         self.fit_to_view()
 
@@ -83,35 +83,58 @@ class ZPlane(QGraphicsView):
             label.setPos(x - label_width / 2, y - label_height / 2)
             self.scene.addItem(label)
 
-    def add_pole_graphically(self, position,graphical_item_shape):
+    def add_graphical_item(self, position):
         x, y = position.x(), -position.y()
-        pole_complex = complex(x / 100, y / 100)
+        complex_value = complex(x / 100, y / 100)
 
-        pole_graphical_item = QGraphicsTextItem(graphical_item_shape)
-        pole_graphical_item.setDefaultTextColor(Qt.GlobalColor.black)
+        graphical_item_shape = ''
+        if self.main_window.complex_type == "Pole" or self.main_window.complex_type == "Conj Poles":
+            graphical_item_shape = 'X'
+        else:
+            graphical_item_shape = 'O'
 
-        font = pole_graphical_item.font()
+        graphical_item = QGraphicsTextItem(graphical_item_shape)
+        graphical_item.setDefaultTextColor(Qt.GlobalColor.black)
+
+        font = graphical_item.font()
         font.setPointSize(7)
-        pole_graphical_item.setFont(font)
+        graphical_item.setFont(font)
 
-        bounding_rect = pole_graphical_item.boundingRect()
+        bounding_rect = graphical_item.boundingRect()
         x_offset = bounding_rect.width() / 2
         y_offset = bounding_rect.height() / 2
-        pole_graphical_item.setPos(x - x_offset, position.y() - y_offset)
+        graphical_item.setPos(x - x_offset, position.y() - y_offset)
 
-        self.scene.addItem(pole_graphical_item)
+        self.scene.addItem(graphical_item)
 
-        self.pole_graphical_items[pole_graphical_item] = pole_complex
+        self.graphical_items[graphical_item] = {"complex value": complex_value, "type": self.main_window.complex_type}
 
+    def add_graphical_conjugate_items(self, position):
+        self.add_graphical_item(position)
+        
+        x, y = position.x(), -position.y()
+        conjugate_position = QPointF(x, y)
+        self.add_graphical_item(conjugate_position)
 
-    def remove_pole_graphically(self, pole_graphical_item):
+        original_item = self.get_graphical_item_at_position(position)
+        conjugate_item = self.get_graphical_item_at_position(conjugate_position)
+        
+        if original_item and conjugate_item:
+            self.graphical_items[original_item]['conjugate'] = conjugate_item
+            self.graphical_items[conjugate_item]['conjugate'] = original_item
+
+    def remove_graphical_item(self, pole_graphical_item):
         if pole_graphical_item:
+            conjugate_item = self.graphical_items.get(pole_graphical_item, {}).get('conjugate')
+            if conjugate_item:
+                self.scene.removeItem(conjugate_item)
+                del self.graphical_items[conjugate_item]
+
             self.scene.removeItem(pole_graphical_item)
-            del self.pole_graphical_items[pole_graphical_item]
+            del self.graphical_items[pole_graphical_item]
 
-
-    def get_pole_graphical_item_at_position(self, position):
-        for pole in self.pole_graphical_items.keys():
+    def get_graphical_item_at_position(self, position):
+        for pole in self.graphical_items.keys():
             if pole.sceneBoundingRect().contains(position):
                 return pole
         return None
