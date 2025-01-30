@@ -15,6 +15,7 @@ from view.interactive_z_plane import InteractiveZPlane
 from model.filter_model import FilterModel
 
 from controller.filter_controller import FilterController
+from controller.signal_controller import SignalController
 
 
 class MainWindow(QMainWindow):
@@ -323,12 +324,6 @@ class MainWindow(QMainWindow):
         self.slider_container_layout.addWidget(self.filter_speed_label)
         self.slider_container_layout.addWidget(self.filter_speed_slider)
 
-
-        
-
-
-
-
         self.structure_code_viewer = CustomStackedWidget()
         self.second_row_layout.addWidget(self.structure_code_viewer)
 
@@ -339,13 +334,9 @@ class MainWindow(QMainWindow):
         self.all_pass_filters_table.setFixedHeight(240)
 
         self.filter_controller = FilterController(self)
+        self.signal_controller = SignalController(self)
 
-        
-
-
-        
-
-
+        self.import_signal_button.clicked.connect(self.signal_controller.import_signal)
 
         self.setStyleSheet("""
             #all_pass_filters_widget{
