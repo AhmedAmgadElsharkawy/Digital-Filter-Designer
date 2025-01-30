@@ -1,3 +1,4 @@
+from utils.z_plane_utils import calculate_response
 class AllPassFilterController():
     def __init__(self,main_window):
         super().__init__()
@@ -14,3 +15,18 @@ class AllPassFilterController():
             self.checked_filters.append(self.filters[idx])
         else:
             self.checked_filters.remove(self.filters[idx])
+        self.data_pre_processing()
+
+    def data_pre_processing(self):
+        poles, zeroes = [], []
+        for idx, value in enumerate(self.checked_filters):
+            poles.append(value)
+            if value.imag != 0:
+                zeroes.append(value.real - value.imag * 1j)
+            else:
+                zeroes.append(1 / value.real)
+        self.plot_phase_response(zeroes, poles)
+
+    def plot_phase_response(self, zeroes, poles):
+        omega, magnitude, phase = calculate_response(poles, zeroes)
+        self.main_window.all_pass_filter_phase_response.plot_response(omega,phase)
