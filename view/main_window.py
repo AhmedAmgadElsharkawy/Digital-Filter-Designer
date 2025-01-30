@@ -137,8 +137,8 @@ class MainWindow(QMainWindow):
         self.filter_response_plots_widget_layout = QVBoxLayout(self.filter_response_plots_widget)
         self.filter_response_plots_widget_layout.setContentsMargins(0,0,0,0)
         self.first_row_layout.addWidget(self.filter_response_plots_widget)
-        self.filter_magnitude_response = ResponsePlot(title="Magnitude Response",xlabel='Normalized Frequency (xπ rad/sample)',ylabel='Magnitude')
-        self.filter_phase_response = ResponsePlot(title="Phase Response", xlabel='Normalized Frequency (xπ rad/sample)',ylabel='Phase (radians)')
+        self.filter_magnitude_response = ResponsePlot(title="Magnitude Response",xlabel='Normalized Frequency (xπ rad/sample)',ylabel='Magnitude',plot_type="magnitude")
+        self.filter_phase_response = ResponsePlot(title="Phase Response", xlabel='Normalized Frequency (xπ rad/sample)',ylabel='Phase (radians)',plot_type="phase")
         self.filter_response_plots_widget_layout.addWidget(self.filter_magnitude_response)
         self.filter_response_plots_widget_layout.addWidget(self.filter_phase_response)
         
@@ -229,7 +229,7 @@ class MainWindow(QMainWindow):
 
 
         self.all_pass_filters_table = CustomTable()
-        self.all_pass_filter_phase_response = ResponsePlot(title="All Pass Filter Phase Response")
+        self.all_pass_filter_phase_response = ResponsePlot(title="All Pass Filter Phase Response",plot_type="phase")
         self.all_pass_filter_z_plane = ZPlane(self)
         self.apply_all_pass_filter_button = QPushButton("Apply The Filter")
         self.all_pass_filters_widget_layout.addWidget(self.all_pass_filter_label)
