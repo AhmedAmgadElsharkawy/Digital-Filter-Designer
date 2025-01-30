@@ -1,10 +1,15 @@
 from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtCore import QTimer
 import pyqtgraph as pg
 import csv
 import numpy as np
 class SignalController():
     def __init__(self,main_window):
         self.main_window = main_window
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update)
+        self.step = 0
+        self.pointer = 0
 
     def import_signal(self):
         self.fileName = QFileDialog.getOpenFileName(None,"Open a File","./",filter="Raw Data(*.txt *.csv *.xls)" )
@@ -22,3 +27,18 @@ class SignalController():
 
                 self.main_window.signal_plot.plot(x_values, y_values, pen=pg.mkPen('b', width=2))
                 self.main_window.filtered_signal_plot.plot(x_values, y_values, pen=pg.mkPen('b', width=2))
+
+                self.run_signal(x_values[-1] / 10)
+
+    def run_signal(self, step):
+        self.timer.stop()
+        self.step = step
+        self.pointer = self.step
+        self.timer.start(20)
+
+    def update(self):
+        self.main_window.signal_plot.setXRange(self.pointer - self.step, self.pointer)
+        self.main_window.filtered_signal_plot.setXRange(self.pointer - self.step, self.pointer)
+        self.pointer += self.step * 0.01
+        if self.pointer >= self.step *10:
+              self.timer.stop()
