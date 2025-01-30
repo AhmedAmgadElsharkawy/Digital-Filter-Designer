@@ -1,4 +1,5 @@
 from utils.z_plane_utils import calculate_response
+from PyQt5.QtCore import QPointF
 class AllPassFilterController():
     def __init__(self,main_window):
         super().__init__()
@@ -26,7 +27,13 @@ class AllPassFilterController():
             else:
                 zeroes.append(1 / value.real)
         self.plot_phase_response(zeroes, poles)
+        self.plot_z_plane(zeroes, poles)
 
     def plot_phase_response(self, zeroes, poles):
         omega, magnitude, phase = calculate_response(poles, zeroes)
         self.main_window.all_pass_filter_phase_response.plot_response(omega,phase)
+
+    def plot_z_plane(self, zeroes, poles):
+        for pole in poles:
+            point = QPointF(pole.real * 100, pole.imag * -100)
+            self.main_window.all_pass_filter_z_plane.add_graphical_item(point, "Pole")
