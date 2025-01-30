@@ -229,7 +229,7 @@ class MainWindow(QMainWindow):
         self.all_pass_filter_label.setFont(font)
 
 
-        self.all_pass_filters_table = CustomTable()
+        self.all_pass_filters_table = CustomTable(self)
         self.all_pass_filter_phase_response = ResponsePlot(title="All Pass Filter Phase Response",plot_type="phase")
         self.all_pass_filter_z_plane = ZPlane(self)
         self.apply_all_pass_filter_button = QPushButton("Apply The Filter")

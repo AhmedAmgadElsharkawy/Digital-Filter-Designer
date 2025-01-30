@@ -3,11 +3,13 @@ from PyQt5.QtWidgets import (
     QTableWidgetItem, QDoubleSpinBox, QPushButton, QLabel, QCheckBox, QTableWidget
 )
 from PyQt5.QtCore import Qt
+from controller.all_pass_filter_controller import AllPassFilterController
 
 
 class CustomTable(QWidget):
-    def __init__(self):
+    def __init__(self, main_window):
         super().__init__()
+        self.main_window = main_window
         self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 
@@ -53,11 +55,14 @@ class CustomTable(QWidget):
 
         self.setLayout(self.main_layout)
 
+        self.all_pass_filter_controller = AllPassFilterController(self.main_window)
+
     def add_to_table(self):
         real = self.real_part_spin.value()
         imag = self.imaginary_part_spin.value()
 
         complex_number = complex(real, imag)
+        idx = self.all_pass_filter_controller.add_filter(complex_number)
 
         row_position = self.table.rowCount()
         self.table.insertRow(row_position)
@@ -65,6 +70,7 @@ class CustomTable(QWidget):
         self.table.setItem(row_position, 0, QTableWidgetItem(str(complex_number)))
 
         checkbox = QCheckBox()
+        checkbox.stateChanged.connect(lambda state: self.all_pass_filter_controller.checkbox_state_changed(idx, state))
         checkbox_widget = QWidget()
         checkbox_layout = QHBoxLayout(checkbox_widget)
         checkbox_layout.addWidget(checkbox)
