@@ -55,6 +55,17 @@ class FilterModel:
     def clear_all_poles_and_zeores(self):
         self.clear_poles()
         self.clear_zeroes()
+
+    def swap_zeroes(self):
+        self.poles.extend(self.zeroes)
+        self.conj_poles.extend(self.conj_zeroes)
+        self.clear_zeroes()
+
+    def swap_poles(self):
+        self.zeroes.extend(self.poles)
+        self.conj_zeroes.extend(self.conj_poles)
+        self.clear_poles()
+
         
 
     

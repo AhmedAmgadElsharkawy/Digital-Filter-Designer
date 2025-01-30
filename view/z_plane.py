@@ -160,3 +160,31 @@ class ZPlane(QGraphicsView):
         for item in items_to_remove:
             self.scene.removeItem(item)
             del self.graphical_items[item]
+
+    
+    def swap_zeroes_graphically(self):
+        items_to_swap = [item for item, data in self.graphical_items.items() if data["type"] in ["Zero", "Conj Zeroes"]]
+
+        for item in items_to_swap:
+            item_data = self.graphical_items[item]
+
+            if item_data["type"] == "Zero":
+                item_data["type"] = "Pole"
+            elif item_data["type"] == "Conj Zeroes":
+                item_data["type"] = "Conj Poles"
+
+            item.setPlainText("X")
+
+
+    def swap_poles_graphically(self):
+        items_to_swap = [item for item, data in self.graphical_items.items() if data["type"] in ["Pole", "Conj Poles"]]
+
+        for item in items_to_swap:
+            item_data = self.graphical_items[item]
+
+            if item_data["type"] == "Pole":
+                item_data["type"] = "Zero"
+            elif item_data["type"] == "Conj Poles":
+                item_data["type"] = "Conj Zeroes"
+
+            item.setPlainText("O") 
