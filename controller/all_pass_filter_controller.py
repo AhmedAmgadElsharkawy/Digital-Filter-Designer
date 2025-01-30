@@ -37,3 +37,7 @@ class AllPassFilterController():
         for pole in poles:
             point = QPointF(pole.real * 100, pole.imag * -100)
             self.main_window.all_pass_filter_z_plane.add_graphical_item(point, "Pole")
+
+        for zero in zeroes:
+            point = QPointF(zero.real * 100, zero.imag * -100)
+            self.main_window.all_pass_filter_z_plane.add_graphical_item(point, "Zero")
