@@ -15,7 +15,7 @@ from view.interactive_z_plane import InteractiveZPlane
 from model.filter_model import FilterModel
 
 from controller.filter_controller import FilterController
-
+from controller.save_load_controller import SaveLoadController
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -339,7 +339,7 @@ class MainWindow(QMainWindow):
         self.all_pass_filters_table.setFixedHeight(240)
 
         self.filter_controller = FilterController(self)
-
+        self.save_load_controller = SaveLoadController(self)
         
 
 
