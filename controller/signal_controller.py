@@ -13,6 +13,7 @@ class SignalController():
 
     def plot_file(self, path:str):
           self.main_window.signal_plot.clear()
+          self.main_window.filtered_signal_plot.clear()
           with open(path, 'r') as file:
                 csv_data = csv.reader(file, delimiter=',')
                 data = list(csv_data)
@@ -20,3 +21,4 @@ class SignalController():
                 y_values = np.array([float(row[1]) for row in data[1:] if row[1]])  # Extract second column as Y
 
                 self.main_window.signal_plot.plot(x_values, y_values, pen=pg.mkPen('b', width=2))
+                self.main_window.filtered_signal_plot.plot(x_values, y_values, pen=pg.mkPen('b', width=2))
