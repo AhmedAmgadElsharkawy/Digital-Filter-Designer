@@ -338,8 +338,6 @@ class MainWindow(QMainWindow):
         self.signal_controller = SignalController(self)
         self.all_pass_filters_table.all_pass_filter_controller = AllPassFilterController(self)
 
-        self.import_signal_button.clicked.connect(self.signal_controller.import_signal)
-
         self.setStyleSheet("""
             #all_pass_filters_widget{
                            border: 2px solid gray;

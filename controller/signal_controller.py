@@ -11,6 +11,8 @@ class SignalController():
         self.step = 0
         self.pointer = 0
 
+        self.main_window.import_signal_button.clicked.connect(self.import_signal)
+
     def import_signal(self):
         self.fileName = QFileDialog.getOpenFileName(None,"Open a File","./",filter="Raw Data(*.txt *.csv *.xls)" )
         if self.fileName[0]:  
