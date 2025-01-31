@@ -145,8 +145,10 @@ class MainWindow(QMainWindow):
         self.filter_z_plane_input_fileds_container_layout = QHBoxLayout(self.filter_z_plane_input_fileds_container)
         self.filter_z_plane_input_fileds_container_layout.setSpacing(30)
         self.filter_z_plane_container_layout.addWidget(self.filter_z_plane_input_fileds_container)
-        self.filter_raal_value_input_field = CustomDoubleSpinBox(label = "Real:",range_start=-1000,range_end=1000,step_value=0.1,initial_value=0,decimals=2)
-        self.filter_imag_value_input_field = CustomDoubleSpinBox(label = "Imag:",range_start=-1000,range_end=1000,step_value=0.1,initial_value=0,decimals=2)
+        self.filter_raal_value_input_field = CustomDoubleSpinBox(label = "Real:",range_start=-1000,range_end=1000,step_value=0.1,initial_value=0,decimals=5)
+        self.filter_imag_value_input_field = CustomDoubleSpinBox(label = "Imag:",range_start=-1000,range_end=1000,step_value=0.1,initial_value=0,decimals=5)
+        self.filter_raal_value_input_field.setDisabled(True)
+        self.filter_imag_value_input_field.setDisabled(True)
         self.filter_z_plane_input_fileds_container_layout.addWidget(self.filter_raal_value_input_field)
         self.filter_z_plane_input_fileds_container_layout.addWidget(self.filter_imag_value_input_field)
         

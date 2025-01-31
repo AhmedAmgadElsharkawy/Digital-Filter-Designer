@@ -99,7 +99,10 @@ class ZPlane(QGraphicsView):
             graphical_item_shape = 'O'
 
         graphical_item = QGraphicsTextItem(graphical_item_shape)
-        graphical_item.setDefaultTextColor(Qt.GlobalColor.black)
+        if graphical_item_shape == 'X':
+            graphical_item.setDefaultTextColor(Qt.GlobalColor.red)
+        else:
+            graphical_item.setDefaultTextColor(Qt.GlobalColor.blue)
 
         font = graphical_item.font()
         font.setPointSize(7)
@@ -138,12 +141,13 @@ class ZPlane(QGraphicsView):
 
             self.scene.removeItem(graphical_item)
             del self.graphical_items[graphical_item]
-
+            
     def get_graphical_item_at_position(self, position):
-        for pole in self.graphical_items.keys():
-            if pole.sceneBoundingRect().contains(position):
-                return pole
+        for item in self.graphical_items.keys():
+            if item.sceneBoundingRect().contains(position):
+                return item
         return None
+
     
     def clear_poles_graphical_items(self):
         items_to_remove = [item for item, data in self.graphical_items.items() if data["type"] == "Pole" or data["type"] == "Conj Poles"]
