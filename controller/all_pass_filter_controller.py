@@ -34,6 +34,7 @@ class AllPassFilterController():
         self.main_window.all_pass_filter_phase_response.plot_response(omega,phase)
 
     def plot_z_plane(self, zeroes, poles):
+        self.main_window.all_pass_filter_z_plane.clear_all_graphical_items()
         for pole in poles:
             point = QPointF(pole.real * 100, pole.imag * -100)
             self.main_window.all_pass_filter_z_plane.add_graphical_item(point, "Pole")
