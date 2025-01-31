@@ -1,5 +1,6 @@
 from utils.z_plane_utils import calculate_response
 from PyQt5.QtCore import QPointF
+import numpy as np
 class AllPassFilterController():
     def __init__(self,main_window):
         super().__init__()
@@ -26,10 +27,7 @@ class AllPassFilterController():
         poles, zeroes = [], []
         for idx, value in enumerate(self.checked_filters):
             poles.append(value)
-            if value.imag != 0:
-                zeroes.append(value.real - value.imag * 1j)
-            else:
-                zeroes.append(1 / value.real)
+            zeroes.append(1 / np.conj(value))
         return zeroes, poles
 
     def plot_processed_data(self, zeroes, poles):
@@ -49,3 +47,11 @@ class AllPassFilterController():
         for zero in zeroes:
             point = QPointF(zero.real * 100, zero.imag * -100)
             self.main_window.all_pass_filter_z_plane.add_graphical_item(point, "Zero")
+
+    def apply_all_pass_filter(self):
+        zeroes, poles = self.data_pre_processing()
+        for pole in poles:
+            self.main_window.filter_model.add_pole(pole)
+
+        for zero in zeroes:
+            self.main_window.filter_model.add_zero(zero)
