@@ -22,7 +22,7 @@ class CustomTable(QWidget):
         self.real_part_spin = CustomDoubleSpinBox(label = "Real:",range_start=-1000,range_end=1000,step_value=0.1,initial_value=0,decimals=2)
         self.input_layout.addWidget(self.real_part_spin)
 
-        self.imaginary_part_spin = CustomDoubleSpinBox(label = "Imag::",range_start=-1000,range_end=1000,step_value=0.1,initial_value=0,decimals=2)
+        self.imaginary_part_spin = CustomDoubleSpinBox(label = "Imag:",range_start=-1000,range_end=1000,step_value=0.1,initial_value=0,decimals=2)
         self.input_layout.addWidget(self.imaginary_part_spin)
 
         self.add_button = QPushButton("Add")

@@ -131,9 +131,25 @@ class MainWindow(QMainWindow):
         self.first_row_layout.setSpacing(10)
         # self.filter_row_layout.setContentsMargins(0,0,0,0)
         self.left_container_layout.addWidget(self.first_row)
+
+        self.filter_z_plane_container = QWidget()
+        self.filter_z_plane_container_layout = QVBoxLayout(self.filter_z_plane_container)
+        self.filter_z_plane_container_layout.setContentsMargins(0,0,0,0)
+        self.first_row_layout.addWidget(self.filter_z_plane_container)
         
         self.filter_z_plane = InteractiveZPlane(self)
-        self.first_row_layout.addWidget(self.filter_z_plane)
+        self.filter_z_plane_container_layout.addWidget(self.filter_z_plane)
+
+        self.filter_z_plane_input_fileds_container = QWidget()
+        self.filter_z_plane_input_fileds_container.setObjectName("filter_z_plane_input_fileds_container")
+        self.filter_z_plane_input_fileds_container_layout = QHBoxLayout(self.filter_z_plane_input_fileds_container)
+        self.filter_z_plane_input_fileds_container_layout.setSpacing(30)
+        self.filter_z_plane_container_layout.addWidget(self.filter_z_plane_input_fileds_container)
+        self.filter_raal_value_input_field = CustomDoubleSpinBox(label = "Real:",range_start=-1000,range_end=1000,step_value=0.1,initial_value=0,decimals=2)
+        self.filter_imag_value_input_field = CustomDoubleSpinBox(label = "Imag:",range_start=-1000,range_end=1000,step_value=0.1,initial_value=0,decimals=2)
+        self.filter_z_plane_input_fileds_container_layout.addWidget(self.filter_raal_value_input_field)
+        self.filter_z_plane_input_fileds_container_layout.addWidget(self.filter_imag_value_input_field)
+        
 
         self.filter_response_plots_widget = QWidget()
         self.filter_response_plots_widget_layout = QVBoxLayout(self.filter_response_plots_widget)
@@ -329,6 +345,7 @@ class MainWindow(QMainWindow):
         self.second_row_layout.addWidget(self.structure_code_viewer)
 
         self.filter_z_plane.setFixedWidth(440)
+        self.filter_z_plane_container.setFixedWidth(440)
         self.right_widget.setFixedWidth(300)
         self.all_pass_filter_z_plane.setFixedHeight(200)
         self.all_pass_filter_phase_response.setFixedHeight(200)
@@ -363,6 +380,9 @@ class MainWindow(QMainWindow):
                            border: 2px solid gray;
                            border-radius:10px;
                            }
+            #filter_z_plane_input_fileds_container{
+                           border: 1px solid gray;
+                           }
                            """)
 
     def update_label(self, value):
@@ -380,4 +400,4 @@ class MainWindow(QMainWindow):
         if clicked_button != self.conjugate_poles_button:
             self.conjugate_poles_button.setEnabled(True)
         if clicked_button != self.conjugate_zeroes_button:
-            self.conjugate_zeroes_button.setEnabled(True)
+            self.conjugate_zeroes_button.setEnabled(True).__bool__
