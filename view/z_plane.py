@@ -112,7 +112,7 @@ class ZPlane(QGraphicsView):
 
         self.scene.addItem(graphical_item)
 
-        self.graphical_items[graphical_item] = {"complex value": complex_value, "type": self.main_window.complex_type}
+        self.graphical_items[graphical_item] = {"complex value": complex_value, "type": self.main_window.complex_type if state == None else state}
 
     def add_graphical_conjugate_items(self, position):
         self.add_graphical_item(position)
