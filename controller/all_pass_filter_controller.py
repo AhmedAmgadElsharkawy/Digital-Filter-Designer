@@ -18,7 +18,9 @@ class AllPassFilterController():
             self.checked_filters.append(self.filters[idx])
         else:
             self.checked_filters.remove(self.filters[idx])
-        self.data_pre_processing()
+        zeroes, poles = self.data_pre_processing()
+        self.plot_processed_data(zeroes, poles)
+
 
     def data_pre_processing(self):
         poles, zeroes = [], []
@@ -28,6 +30,9 @@ class AllPassFilterController():
                 zeroes.append(value.real - value.imag * 1j)
             else:
                 zeroes.append(1 / value.real)
+        return zeroes, poles
+
+    def plot_processed_data(self, zeroes, poles):
         self.plot_phase_response(zeroes, poles)
         self.plot_z_plane(zeroes, poles)
 
@@ -44,6 +49,3 @@ class AllPassFilterController():
         for zero in zeroes:
             point = QPointF(zero.real * 100, zero.imag * -100)
             self.main_window.all_pass_filter_z_plane.add_graphical_item(point, "Zero")
-
-    def apply_all_pass_filter(self):
-        pass
