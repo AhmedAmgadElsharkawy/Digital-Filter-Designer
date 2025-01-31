@@ -52,6 +52,7 @@ class InteractiveZPlane(ZPlane):
 
                 self.main_window.filter_model.add_complex_value(complex_value, graphical_item_type)
                 self.selected_item = self.get_graphical_item_at_position(position)
+                self.update_input_fields()
 
 
         if event.button() == Qt.MouseButton.RightButton and graphical_item:
