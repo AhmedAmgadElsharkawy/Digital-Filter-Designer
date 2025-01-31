@@ -41,6 +41,7 @@ class FilterModel(QObject):
         if conjugate_pole in self.conj_poles:
             self.conj_poles.remove(conjugate_pole)
             self.updated.emit()
+            return
 
     def add_conj_zeroes(self, zero):
         self.conj_zeroes.append(zero)

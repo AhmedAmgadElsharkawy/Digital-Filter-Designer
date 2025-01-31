@@ -97,17 +97,11 @@ class InteractiveZPlane(ZPlane):
                 conj_x, conj_y = round(conjugate_position.x() / 100, 5), round(-conjugate_position.y() / 100, 5)
                 new_conjugate_value = complex(conj_x, conj_y)
 
-                if graphical_item_type == "Conj Poles":
-                    self.main_window.filter_model.remove_conj_poles(old_complex_value)
-                    self.main_window.filter_model.add_conj_poles(new_conjugate_value)
-                elif graphical_item_type == "Conj Zeroes":
-                    self.main_window.filter_model.remove_conj_zeroes(old_complex_value)
-                    self.main_window.filter_model.add_conj_zeroes(new_conjugate_value)
-
                 self.graphical_items[conjugate_item]["complex value"] = new_conjugate_value
 
             self.dragging_item = None
             self.setCursor(Qt.ArrowCursor)
+
 
     def change_item_position_graphically(self,item,new_pos):
         bounding_rect = item.boundingRect()
