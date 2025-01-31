@@ -45,15 +45,13 @@ class FilterController():
         for pole in self.main_window.filter_model.conj_poles:
             poles.append(pole)
             conj_pole = complex(pole.real,-pole.imag)
-            if conj_pole != pole:
-                poles.append(complex(pole.real,-pole.imag))
+            poles.append(conj_pole)
 
         zeroes = self.main_window.filter_model.zeroes.copy()
         for zero in self.main_window.filter_model.conj_zeroes:
             zeroes.append(zero)
             conj_zero = complex(zero.real,-zero.imag)
-            if conj_zero != zero:
-                zeroes.append(complex(zero.real,-zero.imag))
+            zeroes.append(conj_zero)
 
         omega, magnitude, phase = calculate_response(poles, zeroes)
 
