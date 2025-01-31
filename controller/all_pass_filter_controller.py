@@ -51,7 +51,11 @@ class AllPassFilterController():
     def apply_all_pass_filter(self):
         zeroes, poles = self.data_pre_processing()
         for pole in poles:
+            point = QPointF(pole.real * 100, pole.imag * -100)
             self.main_window.filter_model.add_pole(pole)
+            self.main_window.filter_z_plane.add_graphical_item(point, "Pole")
 
         for zero in zeroes:
+            point = QPointF(zero.real * 100, zero.imag * -100)
             self.main_window.filter_model.add_zero(zero)
+            self.main_window.filter_z_plane.add_graphical_item(point, "Zero")
