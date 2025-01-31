@@ -56,6 +56,8 @@ class InteractiveZPlane(ZPlane):
 
 
         if event.button() == Qt.MouseButton.RightButton and graphical_item:
+            if graphical_item == self.selected_item:
+                self.disable_input_fields()
             graphical_item_type = self.graphical_items[graphical_item]["type"]
             complex_value = self.graphical_items[graphical_item]["complex value"]
             self.main_window.filter_model.remove_complex_value(complex_value, graphical_item_type)
@@ -129,6 +131,16 @@ class InteractiveZPlane(ZPlane):
         self.main_window.filter_imag_value_input_field.setValue(complex_value.imag)
         
 
+        self.main_window.filter_raal_value_input_field.double_spin_box.blockSignals(False)
+        self.main_window.filter_imag_value_input_field.double_spin_box.blockSignals(False)
+
+    def disable_input_fields(self):
+        self.main_window.filter_raal_value_input_field.double_spin_box.blockSignals(True)
+        self.main_window.filter_imag_value_input_field.double_spin_box.blockSignals(True)
+        self.main_window.filter_raal_value_input_field.setValue(0)
+        self.main_window.filter_imag_value_input_field.setValue(0)
+        self.main_window.filter_raal_value_input_field.setEnabled(False)
+        self.main_window.filter_imag_value_input_field.setEnabled(False)
         self.main_window.filter_raal_value_input_field.double_spin_box.blockSignals(False)
         self.main_window.filter_imag_value_input_field.double_spin_box.blockSignals(False)
 
