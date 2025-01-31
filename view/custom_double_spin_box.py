@@ -22,5 +22,11 @@ class CustomDoubleSpinBox(QWidget):
 
         self.double_spin_box.setButtonSymbols(QDoubleSpinBox.NoButtons)
 
+    def value(self):
+        return self.double_spin_box.value()
+    
+    def setValue(self,value):
+        self.double_spin_box.setValue(value)
+
         
 
