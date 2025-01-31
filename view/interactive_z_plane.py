@@ -59,7 +59,7 @@ class InteractiveZPlane(ZPlane):
 
             conjugate_item = self.graphical_items.get(self.dragging_pole, {}).get('conjugate')
             if conjugate_item:
-                conjugate_position = QPointF(position.x() - x_offset, -position.y() + y_offset)
+                conjugate_position = QPointF(position.x() - x_offset, -position.y() - y_offset)
                 conjugate_item.setPos(conjugate_position)
 
         else:
@@ -70,6 +70,44 @@ class InteractiveZPlane(ZPlane):
                 self.setCursor(Qt.ArrowCursor)
 
     def mouseReleaseEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton and self.dragging_pole:
+            position = self.dragging_pole.pos()
+            x, y = position.x() / 100, -position.y() / 100
+            new_complex_value = complex(x, y)
+
+            old_complex_value = self.graphical_items[self.dragging_pole]["complex value"]
+            graphical_item_type = self.graphical_items[self.dragging_pole]["type"]
+
+            if graphical_item_type == "Pole":
+                self.main_window.filter_model.remove_pole(old_complex_value)
+                self.main_window.filter_model.add_pole(new_complex_value)
+            elif graphical_item_type == "Zero":
+                self.main_window.filter_model.remove_zero(old_complex_value)
+                self.main_window.filter_model.add_zero(new_complex_value)
+            elif graphical_item_type == "Conj Poles":
+                self.main_window.filter_model.remove_conj_poles(old_complex_value)
+                self.main_window.filter_model.add_conj_poles(new_complex_value)
+            elif graphical_item_type == "Conj Zeroes":
+                self.main_window.filter_model.remove_conj_zeroes(old_complex_value)
+                self.main_window.filter_model.add_conj_zeroes(new_complex_value)
+
+            self.graphical_items[self.dragging_pole]["complex value"] = new_complex_value
+
+            conjugate_item = self.graphical_items.get(self.dragging_pole, {}).get('conjugate')
+            if conjugate_item:
+                conjugate_position = conjugate_item.pos()
+                conj_x, conj_y = conjugate_position.x() / 100, -conjugate_position.y() / 100
+                new_conjugate_value = complex(conj_x, conj_y)
+
+                if graphical_item_type == "Conj Poles":
+                    self.main_window.filter_model.remove_conj_poles(old_complex_value)
+                    self.main_window.filter_model.add_conj_poles(new_conjugate_value)
+                elif graphical_item_type == "Conj Zeroes":
+                    self.main_window.filter_model.remove_conj_zeroes(old_complex_value)
+                    self.main_window.filter_model.add_conj_zeroes(new_conjugate_value)
+
+                self.graphical_items[conjugate_item]["complex value"] = new_conjugate_value
+
             self.dragging_pole = None
             self.setCursor(Qt.ArrowCursor)
+
