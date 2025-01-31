@@ -22,30 +22,18 @@ class InteractiveZPlane(ZPlane):
                 graphical_item_type = self.main_window.complex_type
                 x, y = position.x(), -position.y()
                 complex_value = complex(x / 100, y / 100)
+
                 if graphical_item_type == "Pole" or graphical_item_type == "Zero" or complex_value.imag == 0:
                     self.add_graphical_item(position)
                 else:
                     self.add_graphical_conjugate_items(position)
 
-                if graphical_item_type == "Pole":
-                    self.main_window.filter_model.add_pole(complex_value)
-                if graphical_item_type == "Zero":
-                    self.main_window.filter_model.add_zero(complex_value)
-                if graphical_item_type == "Conj Poles":
-                    self.main_window.filter_model.add_conj_poles(complex_value)
-                if graphical_item_type == "Conj Zeroes":
-                    self.main_window.filter_model.add_conj_zeroes(complex_value)
+                self.main_window.filter_model.add_complex_value(complex_value,graphical_item_type)
 
         if event.button() == Qt.MouseButton.RightButton and graphical_item:
             graphical_item_type = self.graphical_items[graphical_item]["type"]
-            if graphical_item_type == "Pole":
-                self.main_window.filter_model.remove_pole(self.graphical_items[graphical_item]["complex value"])
-            if graphical_item_type == "Zero":
-                self.main_window.filter_model.remove_zero(self.graphical_items[graphical_item]["complex value"])
-            if graphical_item_type == "Conj Poles":
-                self.main_window.filter_model.remove_conj_poles(self.graphical_items[graphical_item]["complex value"])
-            if graphical_item_type == "Conj Zeroes":
-                self.main_window.filter_model.remove_conj_zeroes(self.graphical_items[graphical_item]["complex value"])
+            complex_value = self.graphical_items[graphical_item]["complex value"]
+            self.main_window.filter_model.remove_complex_value(complex_value,graphical_item_type)
             self.remove_graphical_item(position)
 
     def mouseMoveEvent(self, event):
@@ -78,18 +66,8 @@ class InteractiveZPlane(ZPlane):
             old_complex_value = self.graphical_items[self.dragging_pole]["complex value"]
             graphical_item_type = self.graphical_items[self.dragging_pole]["type"]
 
-            if graphical_item_type == "Pole":
-                self.main_window.filter_model.remove_pole(old_complex_value)
-                self.main_window.filter_model.add_pole(new_complex_value)
-            elif graphical_item_type == "Zero":
-                self.main_window.filter_model.remove_zero(old_complex_value)
-                self.main_window.filter_model.add_zero(new_complex_value)
-            elif graphical_item_type == "Conj Poles":
-                self.main_window.filter_model.remove_conj_poles(old_complex_value)
-                self.main_window.filter_model.add_conj_poles(new_complex_value)
-            elif graphical_item_type == "Conj Zeroes":
-                self.main_window.filter_model.remove_conj_zeroes(old_complex_value)
-                self.main_window.filter_model.add_conj_zeroes(new_complex_value)
+            self.main_window.filter_model.remove_complex_value(old_complex_value,graphical_item_type)
+            self.main_window.filter_model.add_complex_value(new_complex_value,graphical_item_type)
 
             self.graphical_items[self.dragging_pole]["complex value"] = new_complex_value
 

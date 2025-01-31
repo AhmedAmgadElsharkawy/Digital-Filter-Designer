@@ -81,3 +81,23 @@ class FilterModel(QObject):
         self.conj_zeroes.extend(self.conj_poles)
         self.clear_poles()
         self.updated.emit()
+
+    def add_complex_value(self,complex_value,complex_value_type):
+        if complex_value_type == "Pole":
+            self.add_pole(complex_value)
+        if complex_value_type == "Zero":
+            self.add_zero(complex_value)
+        if complex_value_type == "Conj Poles":
+            self.add_conj_poles(complex_value)
+        if complex_value_type == "Conj Zeroes":
+            self.add_conj_zeroes(complex_value)
+
+    def remove_complex_value(self,complex_value,complex_value_type):
+        if complex_value_type == "Pole":
+            self.remove_pole(complex_value)
+        if complex_value_type == "Zero":
+            self.remove_zero(complex_value)
+        if complex_value_type == "Conj Poles":
+            self.remove_conj_poles(complex_value)
+        if complex_value_type == "Conj Zeroes":
+            self.remove_conj_zeroes(complex_value)
