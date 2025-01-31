@@ -7,6 +7,8 @@ class AllPassFilterController():
         self.filters = []
         self.checked_filters = []
 
+        self.main_window.apply_all_pass_filter_button.clicked.connect(self.apply_all_pass_filter)
+
     def add_filter(self, complex):
         self.filters.append(complex)
         return len(self.filters) - 1
@@ -42,3 +44,6 @@ class AllPassFilterController():
         for zero in zeroes:
             point = QPointF(zero.real * 100, zero.imag * -100)
             self.main_window.all_pass_filter_z_plane.add_graphical_item(point, "Zero")
+
+    def apply_all_pass_filter(self):
+        pass

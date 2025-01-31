@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import (
     QTableWidgetItem, QDoubleSpinBox, QPushButton, QLabel, QCheckBox, QTableWidget
 )
 from PyQt5.QtCore import Qt
-from controller.all_pass_filter_controller import AllPassFilterController
 
 
 class CustomTable(QWidget):
@@ -54,8 +53,6 @@ class CustomTable(QWidget):
         self.main_layout.addLayout(self.input_layout)
 
         self.setLayout(self.main_layout)
-
-        self.all_pass_filter_controller = AllPassFilterController(self.main_window)
 
     def add_to_table(self):
         real = self.real_part_spin.value()

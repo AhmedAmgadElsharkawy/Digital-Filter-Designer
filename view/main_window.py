@@ -16,6 +16,7 @@ from model.filter_model import FilterModel
 
 from controller.filter_controller import FilterController
 from controller.signal_controller import SignalController
+from controller.all_pass_filter_controller import AllPassFilterController
 
 
 class MainWindow(QMainWindow):
@@ -335,6 +336,7 @@ class MainWindow(QMainWindow):
 
         self.filter_controller = FilterController(self)
         self.signal_controller = SignalController(self)
+        self.all_pass_filters_table.all_pass_filter_controller = AllPassFilterController(self)
 
         self.import_signal_button.clicked.connect(self.signal_controller.import_signal)
 
