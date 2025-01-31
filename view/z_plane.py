@@ -83,9 +83,9 @@ class ZPlane(QGraphicsView):
             label.setPos(x - label_width / 2, y - label_height / 2)
             self.scene.addItem(label)
 
-    def add_graphical_item(self, position, state = None):
+    def add_graphical_item(self, position, state=None):
         x, y = position.x(), -position.y()
-        complex_value = complex(x / 100, y / 100)
+        complex_value = complex(round(x / 100, 5), round(y / 100, 5))
 
         graphical_item_shape = ''
         if self.main_window.complex_type == "Pole" or self.main_window.complex_type == "Conj Poles":
@@ -192,4 +192,4 @@ class ZPlane(QGraphicsView):
             elif item_data["type"] == "Conj Poles":
                 item_data["type"] = "Conj Zeroes"
 
-            item.setPlainText("O") 
+            item.setPlainText("O")
