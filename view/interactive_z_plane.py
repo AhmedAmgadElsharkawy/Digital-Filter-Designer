@@ -103,16 +103,6 @@ class InteractiveZPlane(ZPlane):
             self.setCursor(Qt.ArrowCursor)
 
 
-    def change_item_position_graphically(self,item,new_pos):
-        bounding_rect = item.boundingRect()
-        x_offset = bounding_rect.width() / 2
-        y_offset = bounding_rect.height() / 2
-        item.setPos(new_pos.x() - x_offset, new_pos.y() - y_offset)
-        conjugate_item = self.graphical_items.get(item, {}).get('conjugate')
-        if conjugate_item:
-            conjugate_position = QPointF(new_pos.x() - x_offset, -new_pos.y() - y_offset)
-            conjugate_item.setPos(conjugate_position)
-
     def update_input_fields(self):
         self.main_window.filter_raal_value_input_field.double_spin_box.blockSignals(True)
         self.main_window.filter_imag_value_input_field.double_spin_box.blockSignals(True)
