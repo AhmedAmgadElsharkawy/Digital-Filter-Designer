@@ -216,20 +216,14 @@ class MainWindow(QMainWindow):
         self.filter_order_spin_box.setButtonSymbols(QSpinBox.NoButtons)
 
 
-        self.filter_start_frequency_container = CustomDoubleSpinBox(label="Start Frequency")
-        self.filter_controls_widget_layout.addWidget(self.filter_start_frequency_container)
+        self.filter_cutoff_frequency_container = CustomDoubleSpinBox(label="Cutoff Frequency")
+        self.filter_controls_widget_layout.addWidget(self.filter_cutoff_frequency_container)
 
-        self.filter_end_frequency_container = CustomDoubleSpinBox(label="End Frequency")
-        self.filter_controls_widget_layout.addWidget(self.filter_end_frequency_container)
-
-        self.transition_band_container = CustomDoubleSpinBox(label="Transition Band")
-        self.filter_controls_widget_layout.addWidget(self.filter_end_frequency_container)
+        self.stopband_ripple_container = CustomDoubleSpinBox(label="Stopband Ripple")
+        self.filter_controls_widget_layout.addWidget(self.stopband_ripple_container)
 
         self.passband_ripple_container = CustomDoubleSpinBox(label="Passband Ripple")
         self.filter_controls_widget_layout.addWidget(self.passband_ripple_container)
-
-        self.stopband_ripple_contnainer = CustomDoubleSpinBox(label="Stopband Ripple")
-        self.filter_controls_widget_layout.addWidget(self.filter_end_frequency_container)
         
         self.all_pass_filters_widget = QWidget()
         self.all_pass_filters_widget_layout = QVBoxLayout(self.all_pass_filters_widget)
