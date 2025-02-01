@@ -197,7 +197,7 @@ class MainWindow(QMainWindow):
         self.filter_type_container_layout.setContentsMargins(0,0,0,0)
         self.filter_controls_widget_layout.addWidget(self.filter_type_container)
         self.filter_type_label = QLabel("type")
-        self.filter_types = ['Low-pass', 'High-pass', 'Band-pass', 'Band-stop']
+        self.filter_types = ['Low', 'High', 'Bandpass', 'Bandstop']
         self.filter_type_combobox = QComboBox()
         self.filter_type_combobox.addItems(self.filter_types)
         self.filter_type_container_layout.addWidget(self.filter_type_label)
