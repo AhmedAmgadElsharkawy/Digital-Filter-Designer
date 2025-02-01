@@ -184,8 +184,6 @@ class MainWindow(QMainWindow):
         self.filters_widget_header_layout.addWidget(self.filters_combobox)
         self.filters_widget_header_layout.addWidget(self.apply_filter_button)
 
-        
-
         self.filter_controls_widget = QWidget()
         self.filter_controls_widget_layout = QVBoxLayout(self.filter_controls_widget)
         self.filter_controls_widget_layout.setContentsMargins(0,0,0,0)
@@ -218,6 +216,12 @@ class MainWindow(QMainWindow):
 
         self.filter_cutoff_frequency_container = CustomDoubleSpinBox(label="Cutoff Frequency")
         self.filter_controls_widget_layout.addWidget(self.filter_cutoff_frequency_container)
+
+        self.filter_start_frequency_container = CustomDoubleSpinBox(label="start Frequency")
+        self.filter_controls_widget_layout.addWidget(self.filter_start_frequency_container)
+
+        self.filter_end_frequency_container = CustomDoubleSpinBox(label="end Frequency")
+        self.filter_controls_widget_layout.addWidget(self.filter_end_frequency_container)
 
         self.stopband_ripple_container = CustomDoubleSpinBox(label="Stopband Ripple")
         self.filter_controls_widget_layout.addWidget(self.stopband_ripple_container)

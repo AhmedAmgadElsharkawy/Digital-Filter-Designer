@@ -28,5 +28,11 @@ class CustomDoubleSpinBox(QWidget):
     def setValue(self,value):
         self.double_spin_box.setValue(value)
 
+    def disable(self):
+        self.double_spin_box.setDisabled(True)
+
+    def Enable(self):
+        self.double_spin_box.setDisabled(False)
+
         
 

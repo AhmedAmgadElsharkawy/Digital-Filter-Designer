@@ -4,6 +4,7 @@ class FilterTypeController():
         self.main_window = main_window
 
         self.main_window.apply_filter_button.clicked.connect(self.apply_filter)
+        self.main_window.filter_type_combobox.currentTextChanged.connect(self.changing_filter_type)
 
     def apply_filter(self):
         filter_name = self.main_window.filters_combobox.currentText()
@@ -59,3 +60,9 @@ class FilterTypeController():
 
         zeros, poles, gain = signal.tf2zpk(b, a)
         return zeros, poles
+    
+    def changing_filter_type(self, text):
+        if text == 'Low' or text == 'High':
+            self.main_window.filter_start_frequency_container.Disable()
+        else :
+            print("LLLLLLLLLLLOw")
