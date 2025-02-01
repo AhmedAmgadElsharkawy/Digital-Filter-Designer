@@ -223,10 +223,10 @@ class MainWindow(QMainWindow):
         self.filter_end_frequency_container = CustomDoubleSpinBox(label="end Frequency")
         self.filter_controls_widget_layout.addWidget(self.filter_end_frequency_container)
 
-        self.stopband_ripple_container = CustomDoubleSpinBox(label="Stopband Ripple")
+        self.stopband_ripple_container = CustomDoubleSpinBox(label="Stopband Ripple", range_end = 120)
         self.filter_controls_widget_layout.addWidget(self.stopband_ripple_container)
 
-        self.passband_ripple_container = CustomDoubleSpinBox(label="Passband Ripple")
+        self.passband_ripple_container = CustomDoubleSpinBox(label="Passband Ripple", range_end = 3)
         self.filter_controls_widget_layout.addWidget(self.passband_ripple_container)
         
         self.all_pass_filters_widget = QWidget()
