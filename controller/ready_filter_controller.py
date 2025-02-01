@@ -10,7 +10,7 @@ class FilterTypeController():
         self.main_window.filter_start_frequency_container.disable()
         self.main_window.filter_end_frequency_container.disable()
         
-        self.filter_types_array_preventions = {}
+        self.filter_types_array_controls = {}
         self.enable_and_disable_initialization()
         self.changing_filter_type("Butterworth Filter")
 
@@ -74,16 +74,16 @@ class FilterTypeController():
             self.main_window.filter_cutoff_frequency_container.disable()
 
     def changing_filter_type(self, text):
-        for widget in self.filter_types_array_preventions[text][0]:
+        for widget in self.filter_types_array_controls[text][0]:
             widget.disable()
         
-        for widget in self.filter_types_array_preventions[text][1]:
+        for widget in self.filter_types_array_controls[text][1]:
             widget.enable()
 
 
     def enable_and_disable_initialization(self):
-        self.filter_types_array_preventions["Butterworth Filter"] = [[self.main_window.passband_ripple_container, self.main_window.stopband_ripple_container], []]
-        self.filter_types_array_preventions["Chebyshev Filter"] = [[self.main_window.stopband_ripple_container], [self.main_window.passband_ripple_container]]
-        self.filter_types_array_preventions["inv Chebyshev Filter"] = [[self.main_window.passband_ripple_container], [self.main_window.stopband_ripple_container]]
-        self.filter_types_array_preventions["Bessel Filter"] = [[self.main_window.passband_ripple_container, self.main_window.stopband_ripple_container], []]
-        self.filter_types_array_preventions["Elliptic Filter"] = [[], [self.main_window.passband_ripple_container, self.main_window.stopband_ripple_container]]
+        self.filter_types_array_controls["Butterworth Filter"] = [[self.main_window.passband_ripple_container, self.main_window.stopband_ripple_container], []]
+        self.filter_types_array_controls["Chebyshev Filter"] = [[self.main_window.stopband_ripple_container], [self.main_window.passband_ripple_container]]
+        self.filter_types_array_controls["inv Chebyshev Filter"] = [[self.main_window.passband_ripple_container], [self.main_window.stopband_ripple_container]]
+        self.filter_types_array_controls["Bessel Filter"] = [[self.main_window.passband_ripple_container, self.main_window.stopband_ripple_container], []]
+        self.filter_types_array_controls["Elliptic Filter"] = [[], [self.main_window.passband_ripple_container, self.main_window.stopband_ripple_container]]
