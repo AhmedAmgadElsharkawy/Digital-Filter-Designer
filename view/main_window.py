@@ -344,7 +344,7 @@ class MainWindow(QMainWindow):
         self.slider_container_layout.addWidget(self.filter_speed_label)
         self.slider_container_layout.addWidget(self.filter_speed_slider)
 
-        self.structure_code_viewer = CustomStackedWidget()
+        self.structure_code_viewer = CustomStackedWidget(self.filter_model)
         self.second_row_layout.addWidget(self.structure_code_viewer)
 
         self.filter_z_plane.setMaximumWidth(440)
