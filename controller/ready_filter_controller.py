@@ -8,6 +8,9 @@ class FilterTypeController():
 
         self.main_window.filter_start_frequency_container.disable()
         self.main_window.filter_end_frequency_container.disable()
+        
+        self.filter_types_array_preventions = {}
+        self.preventoins_initialization()
 
     def apply_filter(self):
         filter_name = self.main_window.filters_combobox.currentText()
@@ -67,3 +70,9 @@ class FilterTypeController():
             self.main_window.filter_start_frequency_container.enable()
             self.main_window.filter_end_frequency_container.enable()
             self.main_window.filter_cutoff_frequency_container.disable()
+
+    def preventoins_initialization(self):
+        self.filter_types_array_preventions["Butterworth Filter"] = [self.main_window.passband_ripple_container, self.main_window.stopband_ripple_container]
+        self.filter_types_array_preventions["Chebyshev Filter"] = [self.main_window.stopband_ripple_container]
+        self.filter_types_array_preventions["inv Chebyshev Filter"] = [self.main_window.passband_ripple_container]
+        self.filter_types_array_preventions["Bessel Filter"] = [self.main_window.passband_ripple_container, self.main_window.stopband_ripple_container]
