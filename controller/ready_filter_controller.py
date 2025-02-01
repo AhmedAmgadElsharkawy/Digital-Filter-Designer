@@ -19,19 +19,29 @@ class FilterTypeController():
         filter_btype = self.main_window.filter_type_combobox.currentText().lower()
         filter_order = self.main_window.filter_order_spin_box.value()
         filter_cutoff_frequency = self.main_window.filter_cutoff_frequency_container.value()
+        filter_start_frequency = self.main_window.filter_start_frequency_container.value()
+        filter_end_frequency = self.main_window.filter_end_frequency_container.value()
         filter_passband_ripple = self.main_window.passband_ripple_container.value()
         filter_stopband_ripple = self.main_window.stopband_ripple_container.value()
 
+        cutoff_frequency = self.get_cutoff_frequency(filter_btype, filter_cutoff_frequency, filter_start_frequency, filter_end_frequency)
+
         if filter_name == "Butterworth Filter":
-            zeroes, poles = self.butterworth_filter(filter_order, filter_cutoff_frequency, filter_btype)
+            zeros, poles = self.butterworth_filter(filter_order, cutoff_frequency, filter_btype)
         elif filter_name == "Chebyshev Filter":
-            zeroes, poles = self.chebyshev_filter(filter_order, filter_cutoff_frequency, filter_passband_ripple, filter_btype)
+            zeros, poles = self.chebyshev_filter(filter_order, cutoff_frequency, filter_passband_ripple, filter_btype)
         elif filter_name == "inv Chebyshev Filter":
-            zeroes, poles = self.chebyshev_type_2_filter(filter_order, filter_cutoff_frequency, filter_stopband_ripple, filter_btype)
+            zeros, poles = self.chebyshev_type_2_filter(filter_order, cutoff_frequency, filter_stopband_ripple, filter_btype)
         elif filter_name == "Bessel Filter":
-            zeroes, poles = self.bessel_filter(filter_order, filter_cutoff_frequency, filter_btype)
+            zeros, poles = self.bessel_filter(filter_order, cutoff_frequency, filter_btype)
         elif filter_name == "Elliptic Filter":
-            zeroes, poles = self.elliptic_filter(filter_order, filter_cutoff_frequency, filter_passband_ripple, filter_stopband_ripple, filter_btype)
+            zeros, poles = self.elliptic_filter(filter_order, cutoff_frequency, filter_passband_ripple, filter_stopband_ripple, filter_btype)
+
+    def get_cutoff_frequency(self, btype, cutoff, start, end):
+        if btype == 'low' or btype == 'high':
+            return [cutoff]
+        else :
+            return [start, end]
 
     def butterworth_filter(self, order, cutoff_frequency, type):
         b, a = signal.butter(order, cutoff_frequency, btype=type, analog=False)
