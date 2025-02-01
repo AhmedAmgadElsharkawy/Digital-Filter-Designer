@@ -63,6 +63,10 @@ class FilterTypeController():
     
     def changing_filter_type(self, text):
         if text == 'Low' or text == 'High':
-            self.main_window.filter_start_frequency_container.Disable()
+            self.main_window.filter_start_frequency_container.disable()
+            self.main_window.filter_end_frequency_container.disable()
+            self.main_window.filter_cutoff_frequency_container.enable()
         else :
-            print("LLLLLLLLLLLOw")
+            self.main_window.filter_start_frequency_container.enable()
+            self.main_window.filter_end_frequency_container.enable()
+            self.main_window.filter_cutoff_frequency_container.disable()
