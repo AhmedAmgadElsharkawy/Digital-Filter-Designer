@@ -220,7 +220,7 @@ class MainWindow(QMainWindow):
         self.filter_start_frequency_container = CustomDoubleSpinBox(label="start Frequency")
         self.filter_controls_widget_layout.addWidget(self.filter_start_frequency_container)
 
-        self.filter_end_frequency_container = CustomDoubleSpinBox(label="end Frequency")
+        self.filter_end_frequency_container = CustomDoubleSpinBox(label="end Frequency", initial_value = 0.2)
         self.filter_controls_widget_layout.addWidget(self.filter_end_frequency_container)
 
         self.stopband_ripple_container = CustomDoubleSpinBox(label="Stopband Ripple", range_end = 120)

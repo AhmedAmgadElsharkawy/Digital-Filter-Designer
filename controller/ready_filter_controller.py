@@ -26,6 +26,8 @@ class FilterTypeController():
         filter_stopband_ripple = self.main_window.stopband_ripple_container.value()
 
         cutoff_frequency = self.get_cutoff_frequency(filter_btype, filter_cutoff_frequency, filter_start_frequency, filter_end_frequency)
+        if cutoff_frequency == None:
+            return
 
         if filter_name == "Butterworth Filter":
             zeros, poles = self.butterworth_filter(filter_order, cutoff_frequency, filter_btype)
@@ -44,6 +46,8 @@ class FilterTypeController():
         if btype == 'low' or btype == 'high':
             return [cutoff]
         else :
+            if start >= end:
+                return None
             return [start, end]
 
     def butterworth_filter(self, order, cutoff_frequency, type):
