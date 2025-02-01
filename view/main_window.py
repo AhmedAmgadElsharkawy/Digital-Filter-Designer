@@ -17,6 +17,7 @@ from model.filter_model import FilterModel
 from controller.filter_controller import FilterController
 from controller.signal_controller import SignalController
 from controller.all_pass_filter_controller import AllPassFilterController
+from controller.ready_filter_controller import FilterTypeController
 
 from controller.save_load_controller import SaveLoadController
 
@@ -186,8 +187,6 @@ class MainWindow(QMainWindow):
         self.filters_widget_header_layout.addWidget(self.filters_combobox)
         self.filters_widget_header_layout.addWidget(self.apply_filter_button)
 
-        
-
         self.filter_controls_widget = QWidget()
         self.filter_controls_widget_layout = QVBoxLayout(self.filter_controls_widget)
         self.filter_controls_widget_layout.setContentsMargins(0,0,0,0)
@@ -199,7 +198,7 @@ class MainWindow(QMainWindow):
         self.filter_type_container_layout.setContentsMargins(0,0,0,0)
         self.filter_controls_widget_layout.addWidget(self.filter_type_container)
         self.filter_type_label = QLabel("type")
-        self.filter_types = ['Low-pass', 'High-pass', 'Band-pass', 'Band-stop']
+        self.filter_types = ['Low', 'High', 'Bandpass', 'Bandstop']
         self.filter_type_combobox = QComboBox()
         self.filter_type_combobox.addItems(self.filter_types)
         self.filter_type_container_layout.addWidget(self.filter_type_label)
@@ -218,20 +217,20 @@ class MainWindow(QMainWindow):
         self.filter_order_spin_box.setButtonSymbols(QSpinBox.NoButtons)
 
 
-        self.filter_start_frequency_container = CustomDoubleSpinBox(label="Start Frequency")
+        self.filter_cutoff_frequency_container = CustomDoubleSpinBox(label="Cutoff Frequency")
+        self.filter_controls_widget_layout.addWidget(self.filter_cutoff_frequency_container)
+
+        self.filter_start_frequency_container = CustomDoubleSpinBox(label="start Frequency")
         self.filter_controls_widget_layout.addWidget(self.filter_start_frequency_container)
 
-        self.filter_end_frequency_container = CustomDoubleSpinBox(label="End Frequency")
+        self.filter_end_frequency_container = CustomDoubleSpinBox(label="end Frequency", initial_value = 0.2)
         self.filter_controls_widget_layout.addWidget(self.filter_end_frequency_container)
 
-        self.transition_band_container = CustomDoubleSpinBox(label="Transition Band")
-        self.filter_controls_widget_layout.addWidget(self.filter_end_frequency_container)
+        self.stopband_ripple_container = CustomDoubleSpinBox(label="Stopband Ripple", range_end = 120)
+        self.filter_controls_widget_layout.addWidget(self.stopband_ripple_container)
 
-        self.passband_ripple_container = CustomDoubleSpinBox(label="Passband Ripple")
+        self.passband_ripple_container = CustomDoubleSpinBox(label="Passband Ripple", range_end = 3)
         self.filter_controls_widget_layout.addWidget(self.passband_ripple_container)
-
-        self.stopband_ripple_contnainer = CustomDoubleSpinBox(label="Stopband Ripple")
-        self.filter_controls_widget_layout.addWidget(self.filter_end_frequency_container)
         
         self.all_pass_filters_widget = QWidget()
         self.all_pass_filters_widget_layout = QVBoxLayout(self.all_pass_filters_widget)
@@ -355,6 +354,7 @@ class MainWindow(QMainWindow):
 
         self.filter_controller = FilterController(self)
         self.signal_controller = SignalController(self)
+        self.filter_type_controller = FilterTypeController(self)
         self.all_pass_filters_table.all_pass_filter_controller = AllPassFilterController(self)
         self.save_load_controller = SaveLoadController(self)
         

@@ -46,6 +46,9 @@ class CustomTable(QWidget):
         real = self.real_part_spin.value()
         imag = self.imaginary_part_spin.value()
 
+        if real == 0 and imag == 0:
+            return
+
         complex_number = complex(real, imag)
         idx = self.all_pass_filter_controller.add_filter(complex_number)
 
