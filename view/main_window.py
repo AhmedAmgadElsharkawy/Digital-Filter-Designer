@@ -18,6 +18,7 @@ from controller.filter_controller import FilterController
 from controller.signal_controller import SignalController
 from controller.all_pass_filter_controller import AllPassFilterController
 
+from controller.save_load_controller import SaveLoadController
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -355,6 +356,13 @@ class MainWindow(QMainWindow):
         self.filter_controller = FilterController(self)
         self.signal_controller = SignalController(self)
         self.all_pass_filters_table.all_pass_filter_controller = AllPassFilterController(self)
+        self.save_load_controller = SaveLoadController(self)
+        
+
+
+        
+
+
 
         self.setStyleSheet("""
             #all_pass_filters_widget{
