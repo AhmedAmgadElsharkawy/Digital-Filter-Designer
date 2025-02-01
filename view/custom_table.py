@@ -4,36 +4,25 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 
+from view.custom_double_spin_box import CustomDoubleSpinBox
+
 
 class CustomTable(QWidget):
-    def __init__(self):
+    def __init__(self, main_window):
         super().__init__()
+        self.main_window = main_window
         self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.input_layout = QHBoxLayout()
         self.input_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.real_part_spin = QDoubleSpinBox()
-        self.real_part_spin.setMinimum(-1000.0)
-        self.real_part_spin.setMaximum(1000.0)
-        self.real_part_spin.setValue(0)
-        self.real_part_spin.setDecimals(2)
-        self.real_part_spin.setSingleStep(0.1)
-        self.real_part_spin.setButtonSymbols(QDoubleSpinBox.NoButtons)
-        self.real_part_spin.setMaximumWidth(100)
-        self.input_layout.addWidget(QLabel("Real:"))
+        
+
+        self.real_part_spin = CustomDoubleSpinBox(label = "Real:",range_start=-1000,range_end=1000,step_value=0.1,initial_value=0,decimals=2)
         self.input_layout.addWidget(self.real_part_spin)
 
-        self.imaginary_part_spin = QDoubleSpinBox()
-        self.imaginary_part_spin.setMinimum(-1000.0)
-        self.imaginary_part_spin.setMaximum(1000.0)
-        self.imaginary_part_spin.setValue(0)
-        self.imaginary_part_spin.setDecimals(2)
-        self.imaginary_part_spin.setSingleStep(0.1)
-        self.imaginary_part_spin.setButtonSymbols(QDoubleSpinBox.NoButtons)
-        self.imaginary_part_spin.setMaximumWidth(100)
-        self.input_layout.addWidget(QLabel("Imag:"))
+        self.imaginary_part_spin = CustomDoubleSpinBox(label = "Imag:",range_start=-1000,range_end=1000,step_value=0.1,initial_value=0,decimals=2)
         self.input_layout.addWidget(self.imaginary_part_spin)
 
         self.add_button = QPushButton("Add")
@@ -58,6 +47,7 @@ class CustomTable(QWidget):
         imag = self.imaginary_part_spin.value()
 
         complex_number = complex(real, imag)
+        idx = self.all_pass_filter_controller.add_filter(complex_number)
 
         row_position = self.table.rowCount()
         self.table.insertRow(row_position)
@@ -65,6 +55,7 @@ class CustomTable(QWidget):
         self.table.setItem(row_position, 0, QTableWidgetItem(str(complex_number)))
 
         checkbox = QCheckBox()
+        checkbox.stateChanged.connect(lambda state: self.all_pass_filter_controller.checkbox_state_changed(idx, state))
         checkbox_widget = QWidget()
         checkbox_layout = QHBoxLayout(checkbox_widget)
         checkbox_layout.addWidget(checkbox)

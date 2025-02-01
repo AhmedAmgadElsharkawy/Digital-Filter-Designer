@@ -15,7 +15,10 @@ from view.interactive_z_plane import InteractiveZPlane
 from model.filter_model import FilterModel
 
 from controller.filter_controller import FilterController
+from controller.signal_controller import SignalController
+from controller.all_pass_filter_controller import AllPassFilterController
 
+from controller.save_load_controller import SaveLoadController
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -129,9 +132,27 @@ class MainWindow(QMainWindow):
         self.first_row_layout.setSpacing(10)
         # self.filter_row_layout.setContentsMargins(0,0,0,0)
         self.left_container_layout.addWidget(self.first_row)
+
+        self.filter_z_plane_container = QWidget()
+        self.filter_z_plane_container_layout = QVBoxLayout(self.filter_z_plane_container)
+        self.filter_z_plane_container_layout.setContentsMargins(0,0,0,0)
+        self.first_row_layout.addWidget(self.filter_z_plane_container)
         
         self.filter_z_plane = InteractiveZPlane(self)
-        self.first_row_layout.addWidget(self.filter_z_plane)
+        self.filter_z_plane_container_layout.addWidget(self.filter_z_plane)
+
+        self.filter_z_plane_input_fileds_container = QWidget()
+        self.filter_z_plane_input_fileds_container.setObjectName("filter_z_plane_input_fileds_container")
+        self.filter_z_plane_input_fileds_container_layout = QHBoxLayout(self.filter_z_plane_input_fileds_container)
+        self.filter_z_plane_input_fileds_container_layout.setSpacing(30)
+        self.filter_z_plane_container_layout.addWidget(self.filter_z_plane_input_fileds_container)
+        self.filter_raal_value_input_field = CustomDoubleSpinBox(label = "Real:",range_start=-1000,range_end=1000,step_value=0.1,initial_value=0,decimals=5)
+        self.filter_imag_value_input_field = CustomDoubleSpinBox(label = "Imag:",range_start=-1000,range_end=1000,step_value=0.1,initial_value=0,decimals=5)
+        self.filter_raal_value_input_field.setDisabled(True)
+        self.filter_imag_value_input_field.setDisabled(True)
+        self.filter_z_plane_input_fileds_container_layout.addWidget(self.filter_raal_value_input_field)
+        self.filter_z_plane_input_fileds_container_layout.addWidget(self.filter_imag_value_input_field)
+        
 
         self.filter_response_plots_widget = QWidget()
         self.filter_response_plots_widget_layout = QVBoxLayout(self.filter_response_plots_widget)
@@ -228,7 +249,7 @@ class MainWindow(QMainWindow):
         self.all_pass_filter_label.setFont(font)
 
 
-        self.all_pass_filters_table = CustomTable()
+        self.all_pass_filters_table = CustomTable(self)
         self.all_pass_filter_phase_response = ResponsePlot(title="All Pass Filter Phase Response",plot_type="phase")
         self.all_pass_filter_z_plane = ZPlane(self)
         self.apply_all_pass_filter_button = QPushButton("Apply The Filter")
@@ -287,7 +308,7 @@ class MainWindow(QMainWindow):
         
         self.padding_area = PaddingArea()
         self.signal_container_first_row_layout.addWidget(self.padding_area)
-        self.padding_area.setFixedSize(300,440)
+        self.padding_area.setMinimumWidth(250)
 
 
         self.signal_container_second_row = QWidget()
@@ -323,23 +344,19 @@ class MainWindow(QMainWindow):
         self.slider_container_layout.addWidget(self.filter_speed_label)
         self.slider_container_layout.addWidget(self.filter_speed_slider)
 
-
-        
-
-
-
-
-        self.structure_code_viewer = CustomStackedWidget(self.filter_model)
+        self.structure_code_viewer = CustomStackedWidget()
         self.second_row_layout.addWidget(self.structure_code_viewer)
 
-        self.filter_z_plane.setFixedWidth(440)
+        self.filter_z_plane.setMaximumWidth(440)
+        self.filter_z_plane_container.setMaximumWidth(440)
         self.right_widget.setFixedWidth(300)
-        self.all_pass_filter_z_plane.setFixedHeight(200)
-        self.all_pass_filter_phase_response.setFixedHeight(200)
-        self.all_pass_filters_table.setFixedHeight(240)
+        self.all_pass_filter_z_plane.setMaximumHeight(200)
+        self.all_pass_filter_phase_response.setMaximumHeight(200)
 
         self.filter_controller = FilterController(self)
-
+        self.signal_controller = SignalController(self)
+        self.all_pass_filters_table.all_pass_filter_controller = AllPassFilterController(self)
+        self.save_load_controller = SaveLoadController(self)
         
 
 
@@ -372,6 +389,9 @@ class MainWindow(QMainWindow):
                            border: 2px solid gray;
                            border-radius:10px;
                            }
+            #filter_z_plane_input_fileds_container{
+                           border: 1px solid gray;
+                           }
                            """)
 
     def update_label(self, value):
@@ -389,4 +409,4 @@ class MainWindow(QMainWindow):
         if clicked_button != self.conjugate_poles_button:
             self.conjugate_poles_button.setEnabled(True)
         if clicked_button != self.conjugate_zeroes_button:
-            self.conjugate_zeroes_button.setEnabled(True)
+            self.conjugate_zeroes_button.setEnabled(True).__bool__

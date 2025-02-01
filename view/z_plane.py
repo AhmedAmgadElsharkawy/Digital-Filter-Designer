@@ -83,9 +83,9 @@ class ZPlane(QGraphicsView):
             label.setPos(x - label_width / 2, y - label_height / 2)
             self.scene.addItem(label)
 
-    def add_graphical_item(self, position):
+    def add_graphical_item(self, position, state=None):
         x, y = position.x(), -position.y()
-        complex_value = complex(x / 100, y / 100)
+        complex_value = complex(round(x / 100, 5), round(y / 100, 5))
 
         graphical_item_shape = ''
         if self.main_window.complex_type == "Pole" or self.main_window.complex_type == "Conj Poles":
@@ -93,8 +93,16 @@ class ZPlane(QGraphicsView):
         else:
             graphical_item_shape = 'O'
 
+        if state == "Pole":
+            graphical_item_shape = 'X'
+        elif state == "Zero":
+            graphical_item_shape = 'O'
+
         graphical_item = QGraphicsTextItem(graphical_item_shape)
-        graphical_item.setDefaultTextColor(Qt.GlobalColor.black)
+        if graphical_item_shape == 'X':
+            graphical_item.setDefaultTextColor(Qt.GlobalColor.red)
+        else:
+            graphical_item.setDefaultTextColor(Qt.GlobalColor.blue)
 
         font = graphical_item.font()
         font.setPointSize(7)
@@ -107,21 +115,39 @@ class ZPlane(QGraphicsView):
 
         self.scene.addItem(graphical_item)
 
-        self.graphical_items[graphical_item] = {"complex value": complex_value, "type": self.main_window.complex_type}
+        self.graphical_items[graphical_item] = {"complex value": complex_value, "type": self.main_window.complex_type if state == None else state}
 
     def add_graphical_conjugate_items(self, position):
-        self.add_graphical_item(position)
-        
-        x, y = position.x(), -position.y()
-        conjugate_position = QPointF(x, y)
-        self.add_graphical_item(conjugate_position)
+        x, y = position.x(), position.y()
 
-        original_item = self.get_graphical_item_at_position(position)
-        conjugate_item = self.get_graphical_item_at_position(conjugate_position)
+        temp_position = QPointF(x, y-5)
+        self.add_graphical_item(temp_position)
+        
+        conjugate_temp_position = QPointF(x, -y+5)
+        self.add_graphical_item(conjugate_temp_position)
+
+        original_item = self.get_graphical_item_at_position(temp_position)
+        conjugate_item = self.get_graphical_item_at_position(conjugate_temp_position)
         
         if original_item and conjugate_item:
             self.graphical_items[original_item]['conjugate'] = conjugate_item
             self.graphical_items[conjugate_item]['conjugate'] = original_item
+
+        self.change_item_position_graphically(original_item, position)
+        x, y = round(position.x() / 100, 5), round(-position.y() / 100, 5)
+        new_complex_value = complex(x, y)
+
+        self.graphical_items[original_item]["complex value"] = new_complex_value
+
+        conjugate_item = self.graphical_items.get(original_item, {}).get('conjugate')
+        if conjugate_item:
+            conjugate_position = conjugate_item.pos()
+            conj_x, conj_y = round(conjugate_position.x() / 100, 5), round(-conjugate_position.y() / 100, 5)
+            new_conjugate_value = complex(conj_x, conj_y)
+
+            self.graphical_items[conjugate_item]["complex value"] = new_conjugate_value
+
+
 
     def remove_graphical_item(self, position):
         graphical_item = self.get_graphical_item_at_position(position)
@@ -133,12 +159,13 @@ class ZPlane(QGraphicsView):
 
             self.scene.removeItem(graphical_item)
             del self.graphical_items[graphical_item]
-
+            
     def get_graphical_item_at_position(self, position):
-        for pole in self.graphical_items.keys():
-            if pole.sceneBoundingRect().contains(position):
-                return pole
+        for item in self.graphical_items.keys():
+            if item.sceneBoundingRect().contains(position):
+                return item
         return None
+
     
     def clear_poles_graphical_items(self):
         items_to_remove = [item for item, data in self.graphical_items.items() if data["type"] == "Pole" or data["type"] == "Conj Poles"]
@@ -187,4 +214,14 @@ class ZPlane(QGraphicsView):
             elif item_data["type"] == "Conj Poles":
                 item_data["type"] = "Conj Zeroes"
 
-            item.setPlainText("O") 
+            item.setPlainText("O")
+
+    def change_item_position_graphically(self,item,new_pos):
+        bounding_rect = item.boundingRect()
+        x_offset = bounding_rect.width() / 2
+        y_offset = bounding_rect.height() / 2
+        item.setPos(new_pos.x() - x_offset, new_pos.y() - y_offset)
+        conjugate_item = self.graphical_items.get(item, {}).get('conjugate')
+        if conjugate_item:
+            conjugate_position = QPointF(new_pos.x() - x_offset, -new_pos.y() - y_offset)
+            conjugate_item.setPos(conjugate_position)

@@ -105,7 +105,7 @@ class CustomStackedWidget(QWidget):
         """)
         
         self.export_button.setFixedWidth(150)
-        self.toggle_buttons_widget.setFixedWidth(310)
+        self.toggle_buttons_widget.setMaximumWidth(310)
 
     def switch_view(self, index):
         self.stack.setCurrentIndex(index)
