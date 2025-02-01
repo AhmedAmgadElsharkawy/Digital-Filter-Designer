@@ -329,7 +329,7 @@ class MainWindow(QMainWindow):
 
 
 
-        self.structure_code_viewer = CustomStackedWidget()
+        self.structure_code_viewer = CustomStackedWidget(self.filter_model)
         self.second_row_layout.addWidget(self.structure_code_viewer)
 
         self.filter_z_plane.setFixedWidth(440)
