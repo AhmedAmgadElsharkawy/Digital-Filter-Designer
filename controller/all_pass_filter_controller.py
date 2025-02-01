@@ -22,7 +22,6 @@ class AllPassFilterController():
         zeroes, poles = self.data_pre_processing()
         self.plot_processed_data(zeroes, poles)
 
-
     def data_pre_processing(self):
         poles, zeroes = [], []
         for idx, value in enumerate(self.checked_filters):

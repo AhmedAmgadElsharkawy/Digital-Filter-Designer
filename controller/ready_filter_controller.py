@@ -1,4 +1,5 @@
 import scipy.signal as signal
+from PyQt5.QtCore import QPointF
 class FilterTypeController():
     def __init__(self,main_window):
         self.main_window = main_window
@@ -37,6 +38,8 @@ class FilterTypeController():
         elif filter_name == "Elliptic Filter":
             zeros, poles = self.elliptic_filter(filter_order, cutoff_frequency, filter_passband_ripple, filter_stopband_ripple, filter_btype)
 
+        self.apply_ready_filter(zeros, poles)
+
     def get_cutoff_frequency(self, btype, cutoff, start, end):
         if btype == 'low' or btype == 'high':
             return [cutoff]
@@ -72,6 +75,17 @@ class FilterTypeController():
 
         zeros, poles, gain = signal.tf2zpk(b, a)
         return zeros, poles
+    
+    def apply_ready_filter(self, zeros, poles):
+        for pole in poles:
+            point = QPointF(pole.real * 100, pole.imag * -100)
+            self.main_window.filter_model.add_pole(pole)
+            self.main_window.filter_z_plane.add_graphical_item(point, "Pole")
+
+        for zero in zeros:
+            point = QPointF(zero.real * 100, zero.imag * -100)
+            self.main_window.filter_model.add_zero(zero)
+            self.main_window.filter_z_plane.add_graphical_item(point, "Zero")
     
     def changing_filter_btype(self, text):
         if text == 'Low' or text == 'High':
