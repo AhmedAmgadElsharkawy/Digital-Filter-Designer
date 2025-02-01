@@ -348,7 +348,7 @@ class MainWindow(QMainWindow):
         self.right_widget.setFixedWidth(300)
         self.all_pass_filter_z_plane.setFixedHeight(200)
         self.all_pass_filter_phase_response.setFixedHeight(200)
-        self.all_pass_filters_table.setFixedHeight(240)
+        self.all_pass_filters_table.setFixedHeight(200)
 
         self.filter_controller = FilterController(self)
         self.signal_controller = SignalController(self)
