@@ -307,7 +307,7 @@ class MainWindow(QMainWindow):
         
         self.padding_area = PaddingArea()
         self.signal_container_first_row_layout.addWidget(self.padding_area)
-        self.padding_area.setFixedSize(300,440)
+        self.padding_area.setMinimumWidth(250)
 
 
         self.signal_container_second_row = QWidget()
@@ -346,12 +346,11 @@ class MainWindow(QMainWindow):
         self.structure_code_viewer = CustomStackedWidget()
         self.second_row_layout.addWidget(self.structure_code_viewer)
 
-        self.filter_z_plane.setFixedWidth(440)
-        self.filter_z_plane_container.setFixedWidth(440)
+        self.filter_z_plane.setMaximumWidth(440)
+        self.filter_z_plane_container.setMaximumWidth(440)
         self.right_widget.setFixedWidth(300)
-        self.all_pass_filter_z_plane.setFixedHeight(200)
-        self.all_pass_filter_phase_response.setFixedHeight(200)
-        self.all_pass_filters_table.setFixedHeight(240)
+        self.all_pass_filter_z_plane.setMaximumHeight(200)
+        self.all_pass_filter_phase_response.setMaximumHeight(200)
 
         self.filter_controller = FilterController(self)
         self.signal_controller = SignalController(self)
