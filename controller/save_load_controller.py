@@ -10,7 +10,11 @@ class SaveLoadController:
         # Initialize undo/redo stacks
         self.undo_stack = []
         self.redo_stack = []
-        self.max_history = 20  # Maximum number of states to keep in history
+        self.max_history = 50
+        self._is_batch_operation = False
+        
+        # Save initial empty state
+        self.save_empty_state()
 
         # Connect buttons to handlers
         self.main_window.save_filter_button.clicked.connect(self.save_filter)
@@ -18,51 +22,61 @@ class SaveLoadController:
         self.main_window.undo_button.clicked.connect(self.undo)
         self.main_window.redo_button.clicked.connect(self.redo)
 
-        # Connect to filter model's updated signal to track changes
-        self.main_window.filter_model.updated.connect(self.on_filter_updated)
-
         # Initialize buttons state
+        self.update_button_states()
+
+    def save_empty_state(self):
+        """Save an empty state to the undo stack"""
+        empty_state = {
+            'poles': [],
+            'zeroes': [],
+            'conj_poles': [],
+            'conj_zeroes': []
+        }
+        self.undo_stack = [empty_state]
+        self.redo_stack = []
         self.update_button_states()
 
     def save_current_state(self):
         """Save current filter state to history"""
-        # Don't save state if we're in the middle of a load operation
         if hasattr(self, '_loading'):
             return
-            
+
         current_state = {
             'poles': deepcopy(self.main_window.filter_model.poles),
             'zeroes': deepcopy(self.main_window.filter_model.zeroes),
             'conj_poles': deepcopy(self.main_window.filter_model.conj_poles),
             'conj_zeroes': deepcopy(self.main_window.filter_model.conj_zeroes)
         }
-        
-        # Save state and clear redo stack
-        self.undo_stack.append(current_state)
-        self.redo_stack.clear()
-        
-        # Limit the size of undo stack
-        if len(self.undo_stack) > self.max_history:
-            self.undo_stack.pop(0)
-        
-        self.update_button_states()
 
-    def on_filter_updated(self):
-        """Called when filter model is updated"""
-        # Save state for all operations except load
-        if not hasattr(self, '_loading'):
-            self.save_current_state()
+        if not self._is_batch_operation:
+            # Don't add state if it's identical to the last one
+            if self.undo_stack and self._states_are_equal(current_state, self.undo_stack[-1]):
+                return
+                
+            self.undo_stack.append(current_state)
+            self.redo_stack.clear()
+            
+            if len(self.undo_stack) > self.max_history:
+                self.undo_stack.pop(0)
+            
+            self.update_button_states()
+
+    def _states_are_equal(self, state1, state2):
+        """Compare two states for equality"""
+        return (state1['poles'] == state2['poles'] and
+                state1['zeroes'] == state2['zeroes'] and
+                state1['conj_poles'] == state2['conj_poles'] and
+                state1['conj_zeroes'] == state2['conj_zeroes'])
 
     def update_button_states(self):
         """Update the enabled state of undo/redo buttons"""
-        self.main_window.undo_button.setEnabled(len(self.undo_stack) > 1)  # Enable only if we have more than one state
+        self.main_window.undo_button.setEnabled(len(self.undo_stack) > 1)
         self.main_window.redo_button.setEnabled(len(self.redo_stack) > 0)
 
     def apply_state(self, state):
         """Apply a saved state to the filter"""
-        # Set flag to prevent state saving during state application
         self._loading = True
-        
         try:
             # Clear current state
             self.main_window.filter_model.clear_all_poles_and_zeroes()
@@ -97,24 +111,18 @@ class SaveLoadController:
                 self.main_window.filter_z_plane.add_graphical_conjugate_items(position)
         
         finally:
-            # Remove loading flag
             delattr(self, '_loading')
 
     def undo(self):
         """Undo the last action"""
-        if len(self.undo_stack) <= 1:  # Need at least 2 states to undo
+        if len(self.undo_stack) <= 1:
             return
 
-        # Get current state and previous state
         current_state = self.undo_stack.pop()
-        previous_state = self.undo_stack[-1]  # Get previous state without removing it
+        previous_state = self.undo_stack[-1]
         
-        # Save current state to redo stack
         self.redo_stack.append(current_state)
-        
-        # Apply the previous state
         self.apply_state(previous_state)
-        
         self.update_button_states()
 
     def redo(self):
@@ -122,61 +130,17 @@ class SaveLoadController:
         if not self.redo_stack:
             return
 
-        # Get next state from redo stack
         next_state = self.redo_stack.pop()
-        
-        # Save it to undo stack
         self.undo_stack.append(next_state)
-        
-        # Apply the next state
         self.apply_state(next_state)
-        
         self.update_button_states()
-
-    def save_filter(self):
-        """Save the current filter configuration to a CSV file"""
-        # Get file path from user
-        file_path, _ = QFileDialog.getSaveFileName(
-            self.main_window,
-            "Save Filter Configuration",
-            "data/",  # Default to data directory
-            "CSV Files (*.csv)"
-        )
-
-        if not file_path:
-            return
-
-        try:
-            with open(file_path, 'w', newline='') as f:
-                writer = csv.writer(f)
-                # Write header
-                writer.writerow(['Type', 'Real', 'Imaginary'])
-                
-                # Write poles
-                for pole in self.main_window.filter_model.poles:
-                    writer.writerow(['pole', pole.real, pole.imag])
-                
-                # Write zeros
-                for zero in self.main_window.filter_model.zeroes:
-                    writer.writerow(['zero', zero.real, zero.imag])
-                
-                # Write conjugate poles
-                for pole in self.main_window.filter_model.conj_poles:
-                    writer.writerow(['conj_pole', pole.real, pole.imag])
-                
-                # Write conjugate zeros
-                for zero in self.main_window.filter_model.conj_zeroes:
-                    writer.writerow(['conj_zero', zero.real, zero.imag])
-        except Exception as e:
-            print(f"Error saving filter configuration: {e}")
 
     def load_filter(self):
         """Load a filter configuration from a CSV file"""
-        # Get file path from user
         file_path, _ = QFileDialog.getOpenFileName(
             self.main_window,
             "Load Filter Configuration",
-            "data/",  # Default to data directory
+            "data/",
             "CSV Files (*.csv)"
         )
 
@@ -184,16 +148,27 @@ class SaveLoadController:
             return
 
         try:
-            # Set loading flag to prevent state saving
+            # Save current state before loading
+            current_state = {
+                'poles': deepcopy(self.main_window.filter_model.poles),
+                'zeroes': deepcopy(self.main_window.filter_model.zeroes),
+                'conj_poles': deepcopy(self.main_window.filter_model.conj_poles),
+                'conj_zeroes': deepcopy(self.main_window.filter_model.conj_zeroes)
+            }
+
             self._loading = True
 
-            # Clear existing filter
+            # Clear current state
             self.main_window.filter_model.clear_all_poles_and_zeroes()
             self.main_window.filter_z_plane.clear_all_graphical_items()
 
-            # Clear undo/redo stacks since we're loading a new file
-            self.undo_stack.clear()
-            self.redo_stack.clear()
+            # Load new state from file
+            loaded_state = {
+                'poles': [],
+                'zeroes': [],
+                'conj_poles': [],
+                'conj_zeroes': []
+            }
 
             with open(file_path, 'r', newline='') as f:
                 reader = csv.reader(f)
@@ -208,31 +183,69 @@ class SaveLoadController:
                         self.main_window.complex_type = "Pole"
                         self.main_window.filter_model.add_pole(complex_value)
                         self.main_window.filter_z_plane.add_graphical_item(position)
+                        loaded_state['poles'].append(complex_value)
                     
                     elif type_ == 'zero':
                         self.main_window.complex_type = "Zero"
                         self.main_window.filter_model.add_zero(complex_value)
                         self.main_window.filter_z_plane.add_graphical_item(position)
+                        loaded_state['zeroes'].append(complex_value)
                     
                     elif type_ == 'conj_pole':
                         self.main_window.complex_type = "Conj Poles"
                         self.main_window.filter_model.add_conj_poles(complex_value)
                         self.main_window.filter_z_plane.add_graphical_conjugate_items(position)
+                        loaded_state['conj_poles'].append(complex_value)
                     
                     elif type_ == 'conj_zero':
                         self.main_window.complex_type = "Conj Zeroes"
                         self.main_window.filter_model.add_conj_zeroes(complex_value)
                         self.main_window.filter_z_plane.add_graphical_conjugate_items(position)
+                        loaded_state['conj_zeroes'].append(complex_value)
 
-            # Save initial state after loading
-            self.save_current_state()
+            # Update undo/redo stacks
+            if not self._states_are_equal(current_state, loaded_state):
+                self.undo_stack.append(loaded_state)
+                self.redo_stack.clear()
+                if len(self.undo_stack) > self.max_history:
+                    self.undo_stack.pop(0)
             
         except Exception as e:
             print(f"Error loading filter configuration: {e}")
         finally:
-            # Remove loading flag
             delattr(self, '_loading')
             self.update_button_states()
+
+    def save_filter(self):
+        """Save the current filter configuration to a CSV file"""
+        file_path, _ = QFileDialog.getSaveFileName(
+            self.main_window,
+            "Save Filter Configuration",
+            "data/",
+            "CSV Files (*.csv)"
+        )
+
+        if not file_path:
+            return
+
+        try:
+            with open(file_path, 'w', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(['Type', 'Real', 'Imaginary'])
+                
+                for pole in self.main_window.filter_model.poles:
+                    writer.writerow(['pole', pole.real, pole.imag])
+                
+                for zero in self.main_window.filter_model.zeroes:
+                    writer.writerow(['zero', zero.real, zero.imag])
+                
+                for pole in self.main_window.filter_model.conj_poles:
+                    writer.writerow(['conj_pole', pole.real, pole.imag])
+                
+                for zero in self.main_window.filter_model.conj_zeroes:
+                    writer.writerow(['conj_zero', zero.real, zero.imag])
+        except Exception as e:
+            print(f"Error saving filter configuration: {e}")
 
     def complex_to_position(self, complex_value):
         """Convert a complex number to a QPointF position for the z-plane"""
