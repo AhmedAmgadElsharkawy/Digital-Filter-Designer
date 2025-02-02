@@ -74,10 +74,7 @@ class InteractiveZPlane(ZPlane):
 
             conjugate_item = self.graphical_items.get(self.dragging_item, {}).get('conjugate')
             if conjugate_item:
-                conjugate_position = conjugate_item.pos()
-                conj_x, conj_y = round(conjugate_position.x() / 100, 5), round(-conjugate_position.y() / 100, 5)
-                new_conjugate_value = complex(conj_x, conj_y)
-
+                new_conjugate_value = complex(x, -y)
                 self.graphical_items[conjugate_item]["complex value"] = new_conjugate_value
 
             self.dragging_item = None
