@@ -120,10 +120,10 @@ class ZPlane(QGraphicsView):
     def add_graphical_conjugate_items(self, position):
         x, y = position.x(), position.y()
 
-        temp_position = QPointF(x, y-5)
+        temp_position = QPointF(x, y-20)
         self.add_graphical_item(temp_position)
         
-        conjugate_temp_position = QPointF(x, -y+5)
+        conjugate_temp_position = QPointF(x, -y+20)
         self.add_graphical_item(conjugate_temp_position)
 
         original_item = self.get_graphical_item_at_position(temp_position)
