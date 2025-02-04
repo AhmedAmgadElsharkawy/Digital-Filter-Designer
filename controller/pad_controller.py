@@ -13,7 +13,11 @@ class PadController():
             self.main_window.signal_controller.x.append(signal_x[-1] + 0.05)
             self.main_window.signal_controller.y.append(signal_y[-1] + (0.1 if last.y() > curr.y() else 0.01) * (-1 if last.x() > curr.x() else 1) )
         else :
+            self.main_window.signal_controller.clear_plots_data()
             self.main_window.signal_controller.x.append(0)
             self.main_window.signal_controller.y.append(0.5)
 
         self.main_window.signal_controller.plot_file()
+
+    def set_last_pos(self):
+        self.main_window.padding_area.last_pos = None

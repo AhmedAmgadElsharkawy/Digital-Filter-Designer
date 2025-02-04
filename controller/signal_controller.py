@@ -52,7 +52,6 @@ class SignalController():
         self.run_signal(self.x[-1] / 10)
 
     def run_signal(self, step):
-        print(self.main_window.pad_controller.drawing)
         if self.main_window.pad_controller.drawing:
             return
         self.timer.stop()
@@ -93,3 +92,9 @@ class SignalController():
         if self.moving:
             self.timer.stop()
             self.timer.start(self.speed)
+
+    def clear_plots_data(self):
+        self.x = []
+        self.y = []
+        self.timer.stop()
+        self.moving = False
