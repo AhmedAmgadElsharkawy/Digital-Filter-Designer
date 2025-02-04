@@ -18,7 +18,7 @@ from controller.filter_controller import FilterController
 from controller.signal_controller import SignalController
 from controller.all_pass_filter_controller import AllPassFilterController
 from controller.ready_filter_controller import FilterTypeController
-
+from controller.pad_controller import PadController
 from controller.save_load_controller import SaveLoadController
 
 class MainWindow(QMainWindow):
@@ -357,7 +357,7 @@ class MainWindow(QMainWindow):
         self.filter_type_controller = FilterTypeController(self)
         self.all_pass_filters_table.all_pass_filter_controller = AllPassFilterController(self)
         self.save_load_controller = SaveLoadController(self)
-        
+        self.pad_controller = PadController(self)
 
 
         

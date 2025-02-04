@@ -8,6 +8,7 @@ class PaddingArea(QWidget):
     def __init__(self):
         super().__init__()
 
+        self.pad_controller = None
         self.paths = []
         self.opacity = 255
 
