@@ -196,6 +196,7 @@ class ZPlane(QGraphicsView):
                 item_data["type"] = "Conj Poles"
 
             item.setPlainText("X")
+            item.setDefaultTextColor(Qt.GlobalColor.red)
 
 
     def swap_poles_graphically(self):
@@ -210,6 +211,7 @@ class ZPlane(QGraphicsView):
                 item_data["type"] = "Conj Zeroes"
 
             item.setPlainText("O")
+            item.setDefaultTextColor(Qt.GlobalColor.blue)
 
     def change_item_position_graphically(self,item,new_pos):
         bounding_rect = item.boundingRect()
