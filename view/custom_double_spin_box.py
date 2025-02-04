@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWidget,QHBoxLayout,QLabel,QDoubleSpinBox
 
 
 class CustomDoubleSpinBox(QWidget):
-    def __init__(self,label = "label",range_start = 0.00010,range_end = 0.49999,initial_value = 0.1,decimals = 5,step_value = 0.1):
+    def __init__(self,label = "label",range_start = 0.00010,range_end = 1,initial_value = 0.1,decimals = 5,step_value = 0.1):
         super().__init__()
         self.central_layout = QHBoxLayout(self)
         self.central_layout.setContentsMargins(0,0,0,0)
@@ -23,10 +23,18 @@ class CustomDoubleSpinBox(QWidget):
         self.double_spin_box.setButtonSymbols(QDoubleSpinBox.NoButtons)
 
     def value(self):
-        return self.double_spin_box.value()
+        # round to get rid fo floating point precision error
+        return round(self.double_spin_box.value(), self.double_spin_box.decimals())
+
     
     def setValue(self,value):
         self.double_spin_box.setValue(value)
+
+    def disable(self):
+        self.double_spin_box.setDisabled(True)
+
+    def enable(self):
+        self.double_spin_box.setDisabled(False)
 
         
 

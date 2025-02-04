@@ -8,6 +8,7 @@ class PaddingArea(QWidget):
     def __init__(self):
         super().__init__()
 
+        self.pad_controller = None
         self.paths = []
         self.opacity = 255
 
@@ -58,7 +59,7 @@ class PaddingArea(QWidget):
     def mouseMoveEvent(self, event):
         if event.buttons() != Qt.LeftButton:  
             return 
-        
+
         path = {'points': [], 'opacity': self.opacity}
         self.paths.append(path)
 
@@ -71,6 +72,7 @@ class PaddingArea(QWidget):
                 speed = distance / time_diff
                 self.frequency = speed
 
+        self.pad_controller.add_point(self.last_pos, event.pos())
         self.last_pos = event.pos()
         self.last_time = QTime.currentTime()
 

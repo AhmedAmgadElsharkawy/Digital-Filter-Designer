@@ -120,18 +120,18 @@ class ZPlane(QGraphicsView):
     def add_graphical_conjugate_items(self, position):
         x, y = position.x(), position.y()
 
-        temp_position = QPointF(x, y-5)
+        # multplied by 100000 to get rid of view precision error
+        temp_position = QPointF(x, y*100000)
         self.add_graphical_item(temp_position)
         
-        conjugate_temp_position = QPointF(x, -y+5)
+        conjugate_temp_position = QPointF(x, -y*1000)
         self.add_graphical_item(conjugate_temp_position)
 
         original_item = self.get_graphical_item_at_position(temp_position)
         conjugate_item = self.get_graphical_item_at_position(conjugate_temp_position)
         
-        if original_item and conjugate_item:
-            self.graphical_items[original_item]['conjugate'] = conjugate_item
-            self.graphical_items[conjugate_item]['conjugate'] = original_item
+        self.graphical_items[original_item]['conjugate'] = conjugate_item
+        self.graphical_items[conjugate_item]['conjugate'] = original_item
 
         self.change_item_position_graphically(original_item, position)
         x, y = round(position.x() / 100, 5), round(-position.y() / 100, 5)
@@ -139,13 +139,8 @@ class ZPlane(QGraphicsView):
 
         self.graphical_items[original_item]["complex value"] = new_complex_value
 
-        conjugate_item = self.graphical_items.get(original_item, {}).get('conjugate')
-        if conjugate_item:
-            conjugate_position = conjugate_item.pos()
-            conj_x, conj_y = round(conjugate_position.x() / 100, 5), round(-conjugate_position.y() / 100, 5)
-            new_conjugate_value = complex(conj_x, conj_y)
-
-            self.graphical_items[conjugate_item]["complex value"] = new_conjugate_value
+        new_conjugate_value = complex(x, -y)
+        self.graphical_items[conjugate_item]["complex value"] = new_conjugate_value
 
 
 
@@ -201,6 +196,7 @@ class ZPlane(QGraphicsView):
                 item_data["type"] = "Conj Poles"
 
             item.setPlainText("X")
+            item.setDefaultTextColor(Qt.GlobalColor.red)
 
 
     def swap_poles_graphically(self):
@@ -215,6 +211,7 @@ class ZPlane(QGraphicsView):
                 item_data["type"] = "Conj Zeroes"
 
             item.setPlainText("O")
+            item.setDefaultTextColor(Qt.GlobalColor.blue)
 
     def change_item_position_graphically(self,item,new_pos):
         bounding_rect = item.boundingRect()

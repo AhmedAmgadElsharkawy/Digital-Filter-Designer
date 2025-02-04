@@ -10,8 +10,8 @@ class AllPassFilterController():
 
         self.main_window.apply_all_pass_filter_button.clicked.connect(self.apply_all_pass_filter)
 
-    def add_filter(self, complex):
-        self.filters.append(complex)
+    def add_filter(self, complex_value):
+        self.filters.append(complex(round(complex_value.real,5),round(complex_value.imag,5)))
         return len(self.filters) - 1
 
     def checkbox_state_changed(self, idx, state):
@@ -22,12 +22,14 @@ class AllPassFilterController():
         zeroes, poles = self.data_pre_processing()
         self.plot_processed_data(zeroes, poles)
 
-
     def data_pre_processing(self):
         poles, zeroes = [], []
         for idx, value in enumerate(self.checked_filters):
             poles.append(value)
-            zeroes.append(1 / np.conj(value))
+            conj = complex(value.real,-value.imag)
+            zero = 1/conj
+            zero = complex(round(zero.real,5),round(zero.imag,5))
+            zeroes.append(zero)
         return zeroes, poles
 
     def plot_processed_data(self, zeroes, poles):
@@ -59,3 +61,5 @@ class AllPassFilterController():
             point = QPointF(zero.real * 100, zero.imag * -100)
             self.main_window.filter_model.add_zero(zero)
             self.main_window.filter_z_plane.add_graphical_item(point, "Zero")
+
+        self.main_window.signal_controller.plot_file()

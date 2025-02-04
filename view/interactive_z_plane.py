@@ -12,34 +12,14 @@ class InteractiveZPlane(ZPlane):
 
     def mousePressEvent(self, event):
         position = self.mapToScene(event.pos())
-
         graphical_item = self.get_graphical_item_at_position(position)
 
         if event.button() == Qt.MouseButton.LeftButton:
             if graphical_item:
-                
-                self.change_item_position_graphically(graphical_item,position)
-                position = graphical_item.pos()
-                x, y = round(position.x() / 100, 5), round(-position.y() / 100, 5)
-                new_complex_value = complex(x, y)
-
-                old_complex_value = self.graphical_items[graphical_item]["complex value"]
-                graphical_item_type = self.graphical_items[graphical_item]["type"]
-
-                self.main_window.filter_model.remove_complex_value(old_complex_value, graphical_item_type)
-                self.main_window.filter_model.add_complex_value(new_complex_value, graphical_item_type)
-
-                self.graphical_items[graphical_item]["complex value"] = new_complex_value
-
-
                 self.dragging_item = graphical_item
                 self.selected_item = self.dragging_item
-
                 self.update_input_fields()
                 self.setCursor(Qt.ClosedHandCursor)
-
-                complex_value = self.graphical_items[graphical_item]["complex value"]
-
             else:
                 graphical_item_type = self.main_window.complex_type
                 x, y = position.x(), -position.y()
@@ -53,15 +33,16 @@ class InteractiveZPlane(ZPlane):
                 self.main_window.filter_model.add_complex_value(complex_value, graphical_item_type)
                 self.selected_item = self.get_graphical_item_at_position(position)
                 self.update_input_fields()
-
+                self.main_window.save_load_controller.save_current_state()
 
         if event.button() == Qt.MouseButton.RightButton and graphical_item:
-            if graphical_item == self.selected_item:
+            if graphical_item == self.selected_item or self.graphical_items.get(graphical_item, {}).get('conjugate') == self.selected_item:
                 self.disable_input_fields()
             graphical_item_type = self.graphical_items[graphical_item]["type"]
             complex_value = self.graphical_items[graphical_item]["complex value"]
             self.main_window.filter_model.remove_complex_value(complex_value, graphical_item_type)
             self.remove_graphical_item(position)
+            self.main_window.save_load_controller.save_current_state()
 
     def mouseMoveEvent(self, event):
         position = self.mapToScene(event.pos())
@@ -93,15 +74,12 @@ class InteractiveZPlane(ZPlane):
 
             conjugate_item = self.graphical_items.get(self.dragging_item, {}).get('conjugate')
             if conjugate_item:
-                conjugate_position = conjugate_item.pos()
-                conj_x, conj_y = round(conjugate_position.x() / 100, 5), round(-conjugate_position.y() / 100, 5)
-                new_conjugate_value = complex(conj_x, conj_y)
-
+                new_conjugate_value = complex(x, -y)
                 self.graphical_items[conjugate_item]["complex value"] = new_conjugate_value
 
             self.dragging_item = None
             self.setCursor(Qt.ArrowCursor)
-
+            self.main_window.save_load_controller.save_current_state()
 
     def update_input_fields(self):
         self.main_window.filter_raal_value_input_field.double_spin_box.blockSignals(True)
@@ -129,4 +107,3 @@ class InteractiveZPlane(ZPlane):
         self.main_window.filter_imag_value_input_field.double_spin_box.blockSignals(False)
 
         
-
