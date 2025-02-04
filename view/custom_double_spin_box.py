@@ -23,7 +23,9 @@ class CustomDoubleSpinBox(QWidget):
         self.double_spin_box.setButtonSymbols(QDoubleSpinBox.NoButtons)
 
     def value(self):
-        return self.double_spin_box.value()
+        # round to get rid fo floating point precision error
+        return round(self.double_spin_box.value(), self.double_spin_box.decimals())
+
     
     def setValue(self,value):
         self.double_spin_box.setValue(value)
