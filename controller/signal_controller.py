@@ -22,6 +22,7 @@ class SignalController():
     def import_signal(self):
         self.fileName = QFileDialog.getOpenFileName(None,"Open a File","./",filter="Raw Data(*.txt *.csv *.xls)" )
         if self.fileName[0]:  
+            self.main_window.pad_controller.drawing = False
             self.open_file(self.fileName[0])
 
     def open_file(self, path:str):
@@ -51,6 +52,9 @@ class SignalController():
         self.run_signal(self.x[-1] / 10)
 
     def run_signal(self, step):
+        print(self.main_window.pad_controller.drawing)
+        if self.main_window.pad_controller.drawing:
+            return
         self.timer.stop()
         self.step = step
         self.pointer = self.step
@@ -73,7 +77,7 @@ class SignalController():
         zeros = self.main_window.filter_model.zeroes.copy()
         gain = 1
 
-        if len(self.y) == 0:
+        if len(self.y) < 7:
             return []
 
         if poles == [] and zeros == []:

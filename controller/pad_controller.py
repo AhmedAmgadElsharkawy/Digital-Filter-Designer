@@ -3,8 +3,10 @@ class PadController():
         self.main_window = main_window
         self.main_window.padding_area.pad_controller = self
         self.pointer = 0
+        self.drawing = False
 
     def add_point(self, last, curr):
+        self.drawing = True
         signal_x = self.main_window.signal_controller.x
         signal_y = self.main_window.signal_controller.y
         if last != None:
