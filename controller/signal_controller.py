@@ -40,7 +40,11 @@ class SignalController():
         self.main_window.signal_plot.clear()
         self.main_window.filtered_signal_plot.clear()
         filtered_signal = self.apply_filter()
+        if (len(filtered_signal)) == 0:
+            filtered_signal = self.y
 
+        if len(self.x) == 0:
+            return
         self.main_window.signal_plot.plot(self.x, self.y, pen=pg.mkPen('b', width=2))
         self.main_window.filtered_signal_plot.plot(self.x, np.real(filtered_signal), pen=pg.mkPen('r', width=2))
 
@@ -71,7 +75,7 @@ class SignalController():
         gain = 1
 
         if len(self.y) == 0:
-            return
+            return []
 
         if poles == [] and zeros == []:
             b, a = [1, 1], [1, 1]
