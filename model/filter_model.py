@@ -102,3 +102,70 @@ class FilterModel(QObject):
             self.remove_conj_poles(complex_value)
         if complex_value_type == "Conj Zeroes":
             self.remove_conj_zeroes(complex_value)
+
+    # In the FilterModel class
+    def get_cascade_form(self):
+        """Returns filter coefficients in cascade form sections"""
+        # Each section should have format [b0, b1, b2, 1, a1, a2]
+        # where b's are numerator coeffs and a's are denominator coeffs
+        sections = []
+        
+        # Get zeros and poles
+        zeros = self.get_zeros()
+        poles = self.get_poles()
+        
+        # Group into second-order sections
+        for i in range(0, len(zeros), 2):
+            section = [1.0, 0.0, 0.0, 1.0, 0.0, 0.0]  # Default coefficients
+            # Add zeros coefficients
+            if i < len(zeros):
+                section[1] = -zeros[i].real
+                if i+1 < len(zeros):
+                    section[2] = abs(zeros[i])**2
+            # Add poles coefficients  
+            if i < len(poles):
+                section[4] = -poles[i].real
+                if i+1 < len(poles):
+                    section[5] = abs(poles[i])**2
+            sections.append(section)
+        
+        return sections
+    
+    def get_zeros(self):
+        """Returns all zeros including conjugates"""
+        all_zeros = []
+        all_zeros.extend(self.zeroes)
+        all_zeros.extend(self.conj_zeroes)
+        return all_zeros
+
+    def get_poles(self):
+        """Returns all poles including conjugates"""
+        all_poles = []
+        all_poles.extend(self.poles)
+        all_poles.extend(self.conj_poles)
+        return all_poles
+
+    def get_transfer_function(self, controller):
+        """Returns transfer function coefficients as (numerator, denominator)"""
+        zeros = self.get_zeros()
+        poles = self.get_poles()
+        
+        # Create transfer function coefficients
+        numerator = [1.0]  # Start with highest order term
+        denominator = [1.0]
+        
+        # Add zero contributions
+        for zero in zeros:
+            numerator = [numerator[i] - zero.real * numerator[i-1] if i > 0 else numerator[i] 
+                        for i in range(len(numerator))]
+            numerator.append(abs(zero)**2)
+            
+        # Add pole contributions  
+        for pole in poles:
+            denominator = [denominator[i] - pole.real * denominator[i-1] if i > 0 else denominator[i]
+                        for i in range(len(denominator))]
+            denominator.append(abs(pole)**2)
+            
+        return numerator, denominator
+
+

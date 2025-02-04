@@ -2,7 +2,7 @@ import numpy as np
 from scipy.signal import tf2sos, zpk2tf, freqz
 import matplotlib.pyplot as plt
 
-class StructureCodeController:
+class CCodeController:
     def __init__(self, filter_model):
         self.filter_model = filter_model
 

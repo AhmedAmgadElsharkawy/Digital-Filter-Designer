@@ -2,14 +2,17 @@ from PyQt5.QtWidgets import (
     QWidget, QPushButton, QVBoxLayout, QStackedWidget, QHBoxLayout,
     QTextEdit, QGraphicsView, QGraphicsScene, QFileDialog, QRadioButton
 )
-from PyQt5.QtGui import QFont
-from controller.structure_code_controller import StructureCodeController
+from PyQt5.QtGui import QFont, QImage, QPixmap
+from matplotlib import pyplot as plt
+from controller.c_code_controller import CCodeController
+from controller.structure_controller import StructureController
 
 class CustomStackedWidget(QWidget):
     def __init__(self, filter_model=None):
         super().__init__()
         self.filter_model = filter_model
-        self.structure_controller = StructureCodeController(self.filter_model)
+        self.c_code_controller = CCodeController(self.filter_model)
+        self.structure_controller = StructureController(self.filter_model)
         
         # Setup layouts
         self.central_layout = QVBoxLayout()
@@ -54,6 +57,9 @@ class CustomStackedWidget(QWidget):
         self.filter_form_layout.addWidget(self.direct_form)
         self.filter_form_layout.addWidget(self.cascade_form)
         self.buttons_widget_layout.addWidget(self.filter_form_widget)
+
+        self.direct_form.toggled.connect(self.update_structure_view)
+        self.cascade_form.toggled.connect(self.update_structure_view)
         
         # Export button
         self.export_button = QPushButton("Export")
@@ -115,7 +121,7 @@ class CustomStackedWidget(QWidget):
     def update_code_view(self):
         temp_filename = "temp_filter.c"
         method = "direct_form_II" if self.direct_form.isChecked() else "cascade_form"
-        self.structure_controller.generate_c_code(temp_filename, method=method)
+        self.c_code_controller.generate_c_code(temp_filename, method=method)
         
         with open(temp_filename, 'r') as f:
             code = f.read()
@@ -124,7 +130,7 @@ class CustomStackedWidget(QWidget):
     def show_code_view(self):
         temp_filename = "temp_filter.c"
         method = "direct_form_II" if self.direct_form.isChecked() else "cascade_form"
-        self.structure_controller.generate_c_code(temp_filename, method=method)
+        self.c_code_controller.generate_c_code(temp_filename, method=method)
         
         with open(temp_filename, 'r') as f:
             code = f.read()
@@ -133,8 +139,40 @@ class CustomStackedWidget(QWidget):
 
     def export_filter_structure(self):
         filename, _ = QFileDialog.getSaveFileName(
-            self, "Save Filter Structure", "", "C Files (*.c)"
+            self, "Save Filter Structure", "", "PNG Files (*.png);;JPG Files (*.jpg)"
         )
         if filename:
-            method = "direct_form_II" if self.direct_form.isChecked() else "cascade_form"
-            self.structure_controller.generate_c_code(filename, method=method)
+            scene = self.graphics_view.scene()
+            pixmap = scene.items()[0].pixmap()  
+            pixmap.save(filename)  
+
+    def update_structure_view(self):
+        scene = self.graphics_view.scene()
+        scene.clear()
+        
+        if self.direct_form.isChecked():
+            fig = self.structure_controller.draw_direct_form_2()
+        else:
+            fig, ax = self.structure_controller.draw_cascade_form()
+        
+        if isinstance(fig, tuple):
+            fig = fig[0]
+            
+        fig.canvas.draw()
+        buf = fig.canvas.buffer_rgba()
+        w, h = buf.shape[:2]
+        qimage = QImage(buf, w, h, QImage.Format_RGBA8888)
+        pixmap = QPixmap.fromImage(qimage)
+        
+        self.graphics_view.setSceneRect(0, 0, w, h)
+        scene.addPixmap(pixmap)
+        self.structure_controller.cleanup_figure(fig)
+
+    def switch_view(self, index):
+        self.stack.setCurrentIndex(index)
+        self.structure_button.setDisabled(index == 0)
+        self.code_button.setDisabled(index == 1)
+        if index == 0:
+            self.update_structure_view()
+
+
