@@ -91,6 +91,10 @@ class SignalController():
             b, a = [1, 1], [1, 1]
         else :
             b, a = signal.zpk2tf(zeros, poles, gain)
+
+        if len(self.y) <= 3 * (len(b) + 1) * (len(a) + 1):
+            return []
+        
         filtered_signal = signal.filtfilt(b, a, self.y)
         
         return filtered_signal
