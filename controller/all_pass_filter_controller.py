@@ -63,3 +63,5 @@ class AllPassFilterController():
             self.main_window.filter_z_plane.add_graphical_item(point, "Zero")
 
         self.main_window.signal_controller.plot_file()
+        self.main_window.save_load_controller.save_current_state()
+        
