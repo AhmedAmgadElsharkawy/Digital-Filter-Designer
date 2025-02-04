@@ -62,8 +62,7 @@ class SignalController():
         self.main_window.filtered_signal_plot.setXRange(self.pointer - self.step, self.pointer)
         self.pointer += self.step * 0.01
         if self.pointer >= self.step *10:
-              self.timer.stop()
-              self.moving = False
+              self.pointer = self.step
 
     def reset_signal(self):
         self.pointer = self.step
