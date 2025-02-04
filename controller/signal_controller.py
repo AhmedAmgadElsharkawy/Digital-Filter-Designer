@@ -22,7 +22,7 @@ class SignalController():
     def import_signal(self):
         self.fileName = QFileDialog.getOpenFileName(None,"Open a File","./",filter="Raw Data(*.txt *.csv *.xls)" )
         if self.fileName[0]:  
-            self.main_window.pad_controller.drawing = False
+            self.main_window.pad_controller.reset_variables()
             self.open_file(self.fileName[0])
 
     def open_file(self, path:str):

@@ -19,5 +19,6 @@ class PadController():
 
         self.main_window.signal_controller.plot_file()
 
-    def set_last_pos(self):
+    def reset_variables(self):
+        self.drawing = False
         self.main_window.padding_area.last_pos = None
