@@ -18,7 +18,7 @@ class PaddingArea(QWidget):
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.fade_lines)
-        self.timer.start(30)
+        self.timer.start(10)
 
         self.setGeometry(100, 100, 600, 400)
 
@@ -72,7 +72,7 @@ class PaddingArea(QWidget):
                 speed = distance / time_diff
                 self.frequency = speed
 
-        self.pad_controller.add_point(self.last_pos, event.pos())
+        self.pad_controller.add_point(self.last_pos, event.pos(), self.last_time, QTime.currentTime())
         self.last_pos = event.pos()
         self.last_time = QTime.currentTime()
 
