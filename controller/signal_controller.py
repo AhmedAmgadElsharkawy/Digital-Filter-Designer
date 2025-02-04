@@ -3,6 +3,7 @@ from PyQt5.QtCore import QTimer
 import pyqtgraph as pg
 import csv
 import numpy as np
+from scipy import signal
 class SignalController():
     def __init__(self,main_window):
         self.main_window = main_window
@@ -10,6 +11,8 @@ class SignalController():
         self.timer.timeout.connect(self.update)
         self.step = 0
         self.pointer = 0
+        self.x = None
+        self.y = None
 
         self.main_window.import_signal_button.clicked.connect(self.import_signal)
 
@@ -25,10 +28,14 @@ class SignalController():
                 csv_data = csv.reader(file, delimiter=',')
                 data = list(csv_data)
                 x_values = np.array([float(row[0]) for row in data[1:] if row[0]])  # Extract first column as X
-                y_values = np.array([float(row[1]) for row in data[1:] if row[1]])  # Extract second column as Y
+                y_values = np.array([float(row[1]) for row in data[1:] if row[1]])  # Extract second column as Y                
+                filtered_signal = self.apply_filter(y_values)
+
+                self.x = x_values
+                self.y = y_values
 
                 self.main_window.signal_plot.plot(x_values, y_values, pen=pg.mkPen('b', width=2))
-                self.main_window.filtered_signal_plot.plot(x_values, y_values, pen=pg.mkPen('b', width=2))
+                self.main_window.filtered_signal_plot.plot(x_values, np.real(filtered_signal), pen=pg.mkPen('r', width=2))
 
                 self.run_signal(x_values[-1] / 10)
 
@@ -44,3 +51,13 @@ class SignalController():
         self.pointer += self.step * 0.01
         if self.pointer >= self.step *10:
               self.timer.stop()
+
+    def apply_filter(self, signal_data):
+        poles = self.main_window.filter_model.poles.copy()
+        zeros = self.main_window.filter_model.zeroes.copy()
+        gain = 1
+
+        b, a = signal.zpk2tf(zeros, poles, gain)
+        filtered_signal = signal.filtfilt(b, a, signal_data)
+        
+        return filtered_signal
