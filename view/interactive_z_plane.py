@@ -36,7 +36,7 @@ class InteractiveZPlane(ZPlane):
                 self.main_window.save_load_controller.save_current_state()
 
         if event.button() == Qt.MouseButton.RightButton and graphical_item:
-            if graphical_item == self.selected_item:
+            if graphical_item == self.selected_item or self.graphical_items.get(graphical_item, {}).get('conjugate') == self.selected_item:
                 self.disable_input_fields()
             graphical_item_type = self.graphical_items[graphical_item]["type"]
             complex_value = self.graphical_items[graphical_item]["complex value"]
