@@ -327,13 +327,13 @@ class MainWindow(QMainWindow):
         self.slider_container_layout.setContentsMargins(0,0,0,0)
         self.signal_controls_widget_layout.addWidget(self.slider_container)
 
-        self.filter_speed_label = QLabel("Filter Speed Value: 50", self)
+        self.filter_speed_label = QLabel("Filter Speed Value: 90", self)
         self.filter_speed_label.setAlignment(Qt.AlignCenter)
 
         self.filter_speed_slider = QSlider(Qt.Horizontal)
-        self.filter_speed_slider.setMinimum(0)
+        self.filter_speed_slider.setMinimum(1)
         self.filter_speed_slider.setMaximum(100)
-        self.filter_speed_slider.setValue(50)
+        self.filter_speed_slider.setValue(90)
         self.filter_speed_slider.setTickPosition(QSlider.TicksBelow)
         self.filter_speed_slider.setTickInterval(10)  
         self.filter_speed_slider.setSingleStep(5)  

@@ -13,8 +13,11 @@ class SignalController():
         self.pointer = 0
         self.x = None
         self.y = None
+        self.speed = 20
+        self.moving = False
 
         self.main_window.import_signal_button.clicked.connect(self.import_signal)
+        self.main_window.filter_speed_slider.valueChanged.connect(self.change_filter_speed)
 
     def import_signal(self):
         self.fileName = QFileDialog.getOpenFileName(None,"Open a File","./",filter="Raw Data(*.txt *.csv *.xls)" )
@@ -43,7 +46,8 @@ class SignalController():
         self.timer.stop()
         self.step = step
         self.pointer = self.step
-        self.timer.start(20)
+        self.timer.start(self.speed)
+        self.moving = True
 
     def update(self):
         self.main_window.signal_plot.setXRange(self.pointer - self.step, self.pointer)
@@ -51,6 +55,7 @@ class SignalController():
         self.pointer += self.step * 0.01
         if self.pointer >= self.step *10:
               self.timer.stop()
+              self.moving = False
 
     def apply_filter(self, signal_data):
         poles = self.main_window.filter_model.poles.copy()
@@ -61,3 +66,9 @@ class SignalController():
         filtered_signal = signal.filtfilt(b, a, signal_data)
         
         return filtered_signal
+    
+    def change_filter_speed(self, value):
+        self.speed = 10 + 100 - value
+        if self.moving:
+            self.timer.stop()
+            self.timer.start(self.speed)
