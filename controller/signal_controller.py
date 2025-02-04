@@ -40,12 +40,20 @@ class SignalController():
     def plot_file(self):
         self.main_window.signal_plot.clear()
         self.main_window.filtered_signal_plot.clear()
-        filtered_signal = self.apply_filter()
+        filtered_signal= self.apply_filter()
         if (len(filtered_signal)) == 0 or np.isnan(np.real(filtered_signal[0])):
             filtered_signal = self.y
 
         if len(self.x) == 0:
             return
+        
+        y_min = np.min(self.y)
+        y_max = np.max(self.y)
+        y_min_f = np.min(filtered_signal)
+        y_max_f = np.max(filtered_signal)
+
+        self.set_ranges(self.x[-1], y_min, y_max, y_min_f, y_max_f)
+
         self.main_window.signal_plot.plot(self.x, self.y, pen=pg.mkPen('b', width=2))
         self.main_window.filtered_signal_plot.plot(self.x, np.real(filtered_signal), pen=pg.mkPen('r', width=2))
 
@@ -86,6 +94,14 @@ class SignalController():
         filtered_signal = signal.filtfilt(b, a, self.y)
         
         return filtered_signal
+    
+    def set_ranges(self, x_max, y_min, y_max, y_min_f, y_max_f):
+        self.main_window.signal_plot.setLimits(xMin = 0, xMax = x_max, yMin = y_min, yMax = y_max)
+        self.main_window.filtered_signal_plot.setLimits(xMin = 0, xMax = x_max, yMin = y_min_f, yMax = y_max_f)
+        self.main_window.signal_plot.setXRange(x_max - 10, x_max)
+        self.main_window.filtered_signal_plot.setXRange(x_max - 10, x_max)
+        self.main_window.signal_plot.setYRange(y_min, y_max)
+        self.main_window.filtered_signal_plot.setYRange(y_min_f, y_max_f)
     
     def change_filter_speed(self, value):
         self.speed = 10 + 100 - value

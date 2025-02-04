@@ -19,19 +19,9 @@ class PadController():
             self.main_window.signal_controller.clear_plots_data()
         self.main_window.signal_controller.x.append(new_x)
         self.main_window.signal_controller.y.append(new_y)
-        self.yMax = max(self.yMax, new_y)
-        self.yMin = min(self.yMin, new_y)
-        self.set_ranges(new_x, self.yMin, self.yMax)
 
         self.main_window.signal_controller.plot_file()
 
     def reset_variables(self):
         self.drawing = False
         self.main_window.padding_area.last_pos = None
-
-    def set_ranges(self, x_max, y_min, y_max):
-        self.main_window.signal_plot.setLimits(xMin = 0, xMax = x_max, yMin = y_min, yMax = y_max)
-        self.main_window.filtered_signal_plot.setLimits(xMin = 0, xMax = x_max)
-        self.main_window.signal_plot.setXRange(x_max - 10, x_max)
-        self.main_window.filtered_signal_plot.setXRange(x_max - 10, x_max)
-        self.main_window.signal_plot.setYRange(y_min, y_max)
