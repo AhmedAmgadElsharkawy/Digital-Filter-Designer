@@ -6,6 +6,7 @@ class SaveLoadController:
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
+        self.last_active_type = None  # Track the last actively selected type
 
         # Initialize undo/redo stacks
         self.undo_stack = []
@@ -41,6 +42,10 @@ class SaveLoadController:
         """Save current filter state to history"""
         if hasattr(self, '_loading'):
             return
+
+        # Update last active type when saving state (not during undo/redo)
+        if not hasattr(self, '_undoing'):
+            self.last_active_type = self.main_window.complex_type
 
         current_state = {
             'poles': deepcopy(self.main_window.filter_model.poles),
@@ -78,6 +83,9 @@ class SaveLoadController:
         """Apply a saved state to the filter"""
         self._loading = True
         try:
+            # Store the current type before clearing
+            temp_type = self.last_active_type if self.last_active_type else self.main_window.complex_type
+            
             # Clear current state
             self.main_window.filter_model.clear_all_poles_and_zeroes()
             self.main_window.filter_z_plane.clear_all_graphical_items()
@@ -109,6 +117,9 @@ class SaveLoadController:
                 self.main_window.filter_model.add_conj_zeroes(zero)
                 position = self.complex_to_position(zero)
                 self.main_window.filter_z_plane.add_graphical_conjugate_items(position)
+
+            # Restore the last active type
+            self.main_window.complex_type = temp_type
         
         finally:
             delattr(self, '_loading')
@@ -118,22 +129,30 @@ class SaveLoadController:
         if len(self.undo_stack) <= 1:
             return
 
-        current_state = self.undo_stack.pop()
-        previous_state = self.undo_stack[-1]
-        
-        self.redo_stack.append(current_state)
-        self.apply_state(previous_state)
-        self.update_button_states()
+        self._undoing = True
+        try:
+            current_state = self.undo_stack.pop()
+            previous_state = self.undo_stack[-1]
+            
+            self.redo_stack.append(current_state)
+            self.apply_state(previous_state)
+            self.update_button_states()
+        finally:
+            delattr(self, '_undoing')
 
     def redo(self):
         """Redo the last undone action"""
         if not self.redo_stack:
             return
 
-        next_state = self.redo_stack.pop()
-        self.undo_stack.append(next_state)
-        self.apply_state(next_state)
-        self.update_button_states()
+        self._undoing = True
+        try:
+            next_state = self.redo_stack.pop()
+            self.undo_stack.append(next_state)
+            self.apply_state(next_state)
+            self.update_button_states()
+        finally:
+            delattr(self, '_undoing')
 
     def load_filter(self):
         """Load a filter configuration from a CSV file"""
@@ -148,14 +167,9 @@ class SaveLoadController:
             return
 
         try:
-            # Save current state before loading
-            current_state = {
-                'poles': deepcopy(self.main_window.filter_model.poles),
-                'zeroes': deepcopy(self.main_window.filter_model.zeroes),
-                'conj_poles': deepcopy(self.main_window.filter_model.conj_poles),
-                'conj_zeroes': deepcopy(self.main_window.filter_model.conj_zeroes)
-            }
-
+            # Store the current type
+            current_type = self.main_window.complex_type
+            
             self._loading = True
 
             # Clear current state
@@ -203,8 +217,12 @@ class SaveLoadController:
                         self.main_window.filter_z_plane.add_graphical_conjugate_items(position)
                         loaded_state['conj_zeroes'].append(complex_value)
 
+            # Restore the original type
+            self.main_window.complex_type = current_type
+            self.last_active_type = current_type
+
             # Update undo/redo stacks
-            if not self._states_are_equal(current_state, loaded_state):
+            if not self._states_are_equal(self.undo_stack[-1], loaded_state):
                 self.undo_stack.append(loaded_state)
                 self.redo_stack.clear()
                 if len(self.undo_stack) > self.max_history:
