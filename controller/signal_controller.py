@@ -62,7 +62,10 @@ class SignalController():
         zeros = self.main_window.filter_model.zeroes.copy()
         gain = 1
 
-        b, a = signal.zpk2tf(zeros, poles, gain)
+        if poles == [] and zeros == []:
+            b, a = [1, 1], [1, 1]
+        else :
+            b, a = signal.zpk2tf(zeros, poles, gain)
         filtered_signal = signal.filtfilt(b, a, signal_data)
         
         return filtered_signal
