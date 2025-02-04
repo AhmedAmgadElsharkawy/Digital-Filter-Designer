@@ -49,8 +49,8 @@ class SignalController():
         
         y_min = np.min(self.y)
         y_max = np.max(self.y)
-        y_min_f = np.min(filtered_signal)
-        y_max_f = np.max(filtered_signal)
+        y_min_f = np.real(np.min(filtered_signal))
+        y_max_f = np.real(np.max(filtered_signal))
 
         self.set_ranges(self.x[-1], y_min, y_max, y_min_f, y_max_f)
 
