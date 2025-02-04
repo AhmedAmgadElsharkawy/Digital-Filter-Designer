@@ -21,22 +21,27 @@ class FilterController():
     def clear_poles(self):
         self.main_window.filter_z_plane.clear_poles_graphical_items()
         self.main_window.filter_model.clear_poles()
+        self.main_window.save_load_controller.save_current_state()
 
     def clear_zeores(self):
         self.main_window.filter_z_plane.clear_zeroes_graphical_items()
         self.main_window.filter_model.clear_zeroes()
+        self.main_window.save_load_controller.save_current_state()
 
     def clear_all_poles_and_zeroes(self):
         self.main_window.filter_z_plane.clear_all_graphical_items()
         self.main_window.filter_model.clear_all_poles_and_zeroes()
+        self.main_window.save_load_controller.save_current_state()
 
     def swap_poles(self):
         self.main_window.filter_model.swap_poles()
         self.main_window.filter_z_plane.swap_poles_graphically()
+        self.main_window.save_load_controller.save_current_state()
 
     def swap_zeroes(self):
         self.main_window.filter_model.swap_zeroes()
         self.main_window.filter_z_plane.swap_zeroes_graphically()
+        self.main_window.save_load_controller.save_current_state()
 
     def plot_filter_response(self):
         poles = self.main_window.filter_model.poles.copy()
