@@ -82,11 +82,13 @@ class FilterTypeController():
     
     def apply_ready_filter(self, zeros, poles):
         for pole in poles:
+            pole = complex(round(pole.real,5),round(pole.imag,5))
             point = QPointF(pole.real * 100, pole.imag * -100)
             self.main_window.filter_model.add_pole(pole)
             self.main_window.filter_z_plane.add_graphical_item(point, "Pole")
 
         for zero in zeros:
+            zero = complex(round(zero.real,5),round(zero.imag,5))
             point = QPointF(zero.real * 100, zero.imag * -100)
             self.main_window.filter_model.add_zero(zero)
             self.main_window.filter_z_plane.add_graphical_item(point, "Zero")
