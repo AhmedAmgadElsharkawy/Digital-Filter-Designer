@@ -90,6 +90,8 @@ class FilterTypeController():
             point = QPointF(zero.real * 100, zero.imag * -100)
             self.main_window.filter_model.add_zero(zero)
             self.main_window.filter_z_plane.add_graphical_item(point, "Zero")
+
+        self.main_window.signal_controller.plot_file()
     
     def changing_filter_btype(self, text):
         if text == 'Low' or text == 'High':

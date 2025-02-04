@@ -11,8 +11,8 @@ class SignalController():
         self.timer.timeout.connect(self.update)
         self.step = 0
         self.pointer = 0
-        self.x = None
-        self.y = None
+        self.x = []
+        self.y = []
         self.speed = 20
         self.moving = False
 
@@ -22,25 +22,29 @@ class SignalController():
     def import_signal(self):
         self.fileName = QFileDialog.getOpenFileName(None,"Open a File","./",filter="Raw Data(*.txt *.csv *.xls)" )
         if self.fileName[0]:  
-                    self.plot_file(self.fileName[0])
+            self.open_file(self.fileName[0])
 
-    def plot_file(self, path:str):
-          self.main_window.signal_plot.clear()
-          self.main_window.filtered_signal_plot.clear()
-          with open(path, 'r') as file:
-                csv_data = csv.reader(file, delimiter=',')
-                data = list(csv_data)
-                x_values = np.array([float(row[0]) for row in data[1:] if row[0]])  # Extract first column as X
-                y_values = np.array([float(row[1]) for row in data[1:] if row[1]])  # Extract second column as Y                
-                filtered_signal = self.apply_filter(y_values)
+    def open_file(self, path:str):
+        with open(path, 'r') as file:
+            csv_data = csv.reader(file, delimiter=',')
+            data = list(csv_data)
+            x_values = np.array([float(row[0]) for row in data[1:] if row[0]])  # Extract first column as X
+            y_values = np.array([float(row[1]) for row in data[1:] if row[1]])  # Extract second column as Y       
 
-                self.x = x_values
-                self.y = y_values
+            self.x = x_values
+            self.y = y_values
 
-                self.main_window.signal_plot.plot(x_values, y_values, pen=pg.mkPen('b', width=2))
-                self.main_window.filtered_signal_plot.plot(x_values, np.real(filtered_signal), pen=pg.mkPen('r', width=2))
+            self.plot_file()
 
-                self.run_signal(x_values[-1] / 10)
+    def plot_file(self):
+        self.main_window.signal_plot.clear()
+        self.main_window.filtered_signal_plot.clear()
+        filtered_signal = self.apply_filter()
+
+        self.main_window.signal_plot.plot(self.x, self.y, pen=pg.mkPen('b', width=2))
+        self.main_window.filtered_signal_plot.plot(self.x, np.real(filtered_signal), pen=pg.mkPen('r', width=2))
+
+        self.run_signal(self.x[-1] / 10)
 
     def run_signal(self, step):
         self.timer.stop()
@@ -57,16 +61,23 @@ class SignalController():
               self.timer.stop()
               self.moving = False
 
-    def apply_filter(self, signal_data):
+    def reset_signal(self):
+        self.pointer = self.step
+
+    def apply_filter(self):
+        self.reset_signal()
         poles = self.main_window.filter_model.poles.copy()
         zeros = self.main_window.filter_model.zeroes.copy()
         gain = 1
+
+        if len(self.y) == 0:
+            return
 
         if poles == [] and zeros == []:
             b, a = [1, 1], [1, 1]
         else :
             b, a = signal.zpk2tf(zeros, poles, gain)
-        filtered_signal = signal.filtfilt(b, a, signal_data)
+        filtered_signal = signal.filtfilt(b, a, self.y)
         
         return filtered_signal
     
