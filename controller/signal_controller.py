@@ -41,7 +41,7 @@ class SignalController():
         self.main_window.signal_plot.clear()
         self.main_window.filtered_signal_plot.clear()
         filtered_signal = self.apply_filter()
-        if (len(filtered_signal)) == 0:
+        if (len(filtered_signal)) == 0 or np.isnan(np.real(filtered_signal[0])):
             filtered_signal = self.y
 
         if len(self.x) == 0:
