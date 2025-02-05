@@ -2,7 +2,8 @@ from PyQt5.QtWidgets import (
     QWidget, QPushButton, QVBoxLayout, QStackedWidget, QHBoxLayout,
     QTextEdit, QGraphicsView, QGraphicsScene, QFileDialog, QRadioButton
 )
-from PyQt5.QtGui import QFont, QImage, QPixmap
+from PyQt5.QtGui import QFont, QImage, QPixmap, QPainter
+from PyQt5.QtCore import Qt
 from matplotlib import pyplot as plt
 from controller.c_code_controller import CCodeController
 from controller.structure_controller import StructureController
@@ -60,6 +61,10 @@ class CustomStackedWidget(QWidget):
 
         self.direct_form.toggled.connect(self.update_structure_view)
         self.cascade_form.toggled.connect(self.update_structure_view)
+
+        # Connect filter model's updated signal to update methods
+        self.filter_model.updated.connect(self.update_structure_view)
+        self.filter_model.updated.connect(self.update_code_view)
         
         # Export button
         self.export_button = QPushButton("Export")
@@ -75,10 +80,16 @@ class CustomStackedWidget(QWidget):
         
         self.graphics_view = QGraphicsView(self.structure_widget)
         self.graphics_view.setScene(QGraphicsScene(self.graphics_view))
-        self.graphics_view.scene().setSceneRect(0, 0, 0, 0)
+        self.graphics_view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.graphics_view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.graphics_view.setRenderHint(QPainter.Antialiasing)
+        self.graphics_view.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
+        self.graphics_view.setResizeAnchor(QGraphicsView.AnchorUnderMouse)
         self.graphics_view.setStyleSheet("border: none;")
+        self.graphics_view.wheelEvent = self.zoom_event 
         self.structure_layout.addWidget(self.graphics_view)
-        self.stack.addWidget(self.structure_widget)
+        self.stack.addWidget(self.structure_widget)  # Add this line
+
         
         # Code view setup
         self.code_widget = QTextEdit()
@@ -174,5 +185,27 @@ class CustomStackedWidget(QWidget):
         self.code_button.setDisabled(index == 1)
         if index == 0:
             self.update_structure_view()
+
+    # Add zoom handler method:
+    def zoom_event(self, event):
+        zoom_in_factor = 1.25
+        zoom_out_factor = 1 / zoom_in_factor
+
+        # Save the scene pos
+        old_pos = self.graphics_view.mapToScene(event.pos())
+
+        # Zoom
+        if event.angleDelta().y() > 0:
+            zoom_factor = zoom_in_factor
+        else:
+            zoom_factor = zoom_out_factor
+        self.graphics_view.scale(zoom_factor, zoom_factor)
+
+        # Get the new position
+        new_pos = self.graphics_view.mapToScene(event.pos())
+
+        # Move scene to old position
+        delta = new_pos - old_pos
+        self.graphics_view.translate(delta.x(), delta.y())
 
 

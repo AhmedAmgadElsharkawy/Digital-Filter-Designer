@@ -15,12 +15,10 @@ class StructureController:
         self.filter = filter
 
     def cleanup_figure(self, fig):
-        """Clean up matplotlib figure after use"""
         plt.close(fig)
 
     def _create_figure(self, figsize=(12, 8)):
         """Create new figure and axis or clear existing one"""
-        plt.close('all')  # Close all existing figures
         self.current_fig, self.current_ax = plt.subplots(figsize=figsize)
         return self.current_fig, self.current_ax
 
@@ -28,6 +26,11 @@ class StructureController:
         """Calculate number of delay elements needed"""
         denominator_coeffs = transfer_function[1]
         numerator_coeffs = transfer_function[0]
+        
+        # Check if lists are empty or too short
+        if not denominator_coeffs:
+            return len(numerator_coeffs) - 1
+            
         if len(denominator_coeffs) >= len(numerator_coeffs) - 1:
             if denominator_coeffs[-1] == 0:
                 return len(denominator_coeffs) - 1
@@ -36,7 +39,7 @@ class StructureController:
             if numerator_coeffs[-1] == 0:
                 return len(numerator_coeffs) - 2
             return len(numerator_coeffs) - 1
-
+    
     def _setup_plot(self, width, height, title):
         """Common plot setup logic"""
         ax = self.current_ax
@@ -169,38 +172,33 @@ class StructureController:
         """Create Cascade Form structure from multiple sections"""
         self._create_figure(figsize)
 
-        # Calculate plot dimensions
-        _tf_sections = self.filter.get_cascade_form()  # shape(n_sections, 6)
+        _tf_sections = self.filter.get_cascade_form()
         tf_sections = []
+        
         for section in _tf_sections:
-            numerator = section[:3]
-            denominator = section[4:]
-            if denominator[-1] == 0:
-                denominator = denominator[:-1]
-            if denominator[-1] == 0:
-                denominator = denominator[:-1]
-            if numerator[-1] == 0:
-                numerator = numerator[:-1]
-            if numerator[-1] == 0:
-                numerator = numerator[:-1]
+            numerator = [coef for coef in section[:3] if abs(coef) > 1e-10]
+            denominator = [coef for coef in section[3:] if abs(coef) > 1e-10]  # Now handling indices 3,4
+            
+            # Ensure minimum representation
+            if not numerator:
+                numerator = [1.0]
+            if not denominator:
+                denominator = [1.0]
+                
             tf_sections.append((numerator, denominator))
 
         max_delays = 2
         width = len(tf_sections) * 8 + 2
         self._setup_plot(width, max_delays + 1, 'Filter Structure in Cascade Form')
 
-        # Draw each section
         last_offset = 0
         for i, tf in enumerate(tf_sections):
             last_offset = self._draw_elements(self.current_ax, tf, last_offset)
-
-            # Connection to next section
             if i < len(tf_sections) - 1:
                 self.current_ax.arrow(last_offset + self.circle_radius, 0,
-                                      2.2, 0, head_width=self.arrow_head_width,
-                                      head_length=self.arrow_head_length)
+                                    2.2, 0, head_width=self.arrow_head_width,
+                                    head_length=self.arrow_head_length)
 
-        # Draw final output
         if last_offset is not None:
             self._draw_output_arrow(last_offset)
 

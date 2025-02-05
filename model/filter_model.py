@@ -1,4 +1,5 @@
 from PyQt5.QtCore import pyqtSignal, QObject
+import numpy as np
 
 class FilterModel(QObject):
     updated = pyqtSignal()
@@ -103,46 +104,79 @@ class FilterModel(QObject):
         if complex_value_type == "Conj Zeroes":
             self.remove_conj_zeroes(complex_value)
 
-    # In the FilterModel class
     def get_cascade_form(self):
         """Returns filter coefficients in cascade form sections"""
-        # Each section should have format [b0, b1, b2, 1, a1, a2]
-        # where b's are numerator coeffs and a's are denominator coeffs
         sections = []
-        
-        # Get zeros and poles
         zeros = self.get_zeros()
         poles = self.get_poles()
         
-        # Group into second-order sections
-        for i in range(0, len(zeros), 2):
-            section = [1.0, 0.0, 0.0, 1.0, 0.0, 0.0]  # Default coefficients
-            # Add zeros coefficients
-            if i < len(zeros):
-                section[1] = -zeros[i].real
-                if i+1 < len(zeros):
-                    section[2] = abs(zeros[i])**2
-            # Add poles coefficients  
-            if i < len(poles):
-                section[4] = -poles[i].real
-                if i+1 < len(poles):
-                    section[5] = abs(poles[i])**2
-            sections.append(section)
+        n_sections = max(len(zeros) // 2 + len(zeros) % 2,
+                        len(poles) // 2 + len(poles) % 2)
         
+        for i in range(n_sections):
+            # Initialize section polynomials
+            numerator = [1.0]
+            denominator = [1.0]
+            
+            # Process zeros for this section
+            if 2*i < len(zeros):
+                z = zeros[2*i]
+                numerator = [numerator[j] - z.real * numerator[j-1] if j > 0 else numerator[j] 
+                            for j in range(len(numerator))]
+                numerator.append(abs(z)**2)
+                
+                if 2*i+1 < len(zeros):
+                    z2 = zeros[2*i+1]
+                    numerator = [numerator[j] - z2.real * numerator[j-1] if j > 0 else numerator[j] 
+                            for j in range(len(numerator))]
+                    numerator.append(abs(z2)**2)
+            
+            # Process poles for this section
+            if 2*i < len(poles):
+                p = poles[2*i]
+                denominator = [denominator[j] - p.real * denominator[j-1] if j > 0 else denominator[j] 
+                            for j in range(len(denominator))]
+                denominator.append(abs(p)**2)
+                
+                if 2*i+1 < len(poles):
+                    p2 = poles[2*i+1]
+                    denominator = [denominator[j] - p2.real * denominator[j-1] if j > 0 else denominator[j] 
+                                for j in range(len(denominator))]
+                    denominator.append(abs(p2)**2)
+            
+            # Create section with [b0, b1, b2, a1, a2]
+            section = [1.0, 0.0, 0.0, 0.0, 0.0]
+            if len(numerator) > 1:
+                section[1] = numerator[1]
+            if len(numerator) > 2:
+                section[2] = numerator[2]
+            if len(denominator) > 1:
+                section[3] = denominator[1]
+            if len(denominator) > 2:
+                section[4] = denominator[2]
+                
+            sections.append(section)
+
         return sections
-    
+            
     def get_zeros(self):
         """Returns all zeros including conjugates"""
         all_zeros = []
         all_zeros.extend(self.zeroes)
-        all_zeros.extend(self.conj_zeroes)
+        # Add both parts of conjugate pairs
+        for z in self.conj_zeroes:
+            all_zeros.append(z)
+            all_zeros.append(complex(z.real, -z.imag))  # Add conjugate
         return all_zeros
 
     def get_poles(self):
         """Returns all poles including conjugates"""
         all_poles = []
         all_poles.extend(self.poles)
-        all_poles.extend(self.conj_poles)
+        # Add both parts of conjugate pairs
+        for p in self.conj_poles:
+            all_poles.append(p)
+            all_poles.append(complex(p.real, -p.imag))  # Add conjugate
         return all_poles
 
     def get_transfer_function(self, controller):
