@@ -36,7 +36,7 @@ class PadController():
         d = self.distance(x1, y1, x2, y2)
         time_diff = last_time.msecsTo(curr_time) * 2
         if time_diff == 0:
-            return None
+            return 0.001
         else:
             return d / time_diff
 
