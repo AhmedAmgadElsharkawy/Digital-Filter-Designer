@@ -102,8 +102,8 @@ class SignalController():
     def set_ranges(self, x_max, y_min, y_max, y_min_f, y_max_f):
         self.main_window.signal_plot.setLimits(xMin = 0, xMax = x_max, yMin = y_min, yMax = y_max)
         self.main_window.filtered_signal_plot.setLimits(xMin = 0, xMax = x_max, yMin = y_min_f, yMax = y_max_f)
-        self.main_window.signal_plot.setXRange(x_max - 10, x_max)
-        self.main_window.filtered_signal_plot.setXRange(x_max - 10, x_max)
+        self.main_window.signal_plot.setXRange(x_max - 0.5, x_max)
+        self.main_window.filtered_signal_plot.setXRange(x_max - 0.5, x_max)
         self.main_window.signal_plot.setYRange(y_min, y_max)
         self.main_window.filtered_signal_plot.setYRange(y_min_f, y_max_f)
     
