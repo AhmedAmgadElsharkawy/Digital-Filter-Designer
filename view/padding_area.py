@@ -14,7 +14,6 @@ class PaddingArea(QWidget):
 
         self.last_pos = None
         self.last_time = QTime.currentTime()
-        self.frequency = 0
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.fade_lines)
@@ -54,7 +53,6 @@ class PaddingArea(QWidget):
 
         painter.setPen(QColor(0, 0, 0))
         painter.setFont(QFont('Arial', 12))
-        painter.drawText(10, 30, f"{self.frequency:.2f} Hz")
 
     def mouseMoveEvent(self, event):
         if event.buttons() != Qt.LeftButton:  
@@ -65,13 +63,6 @@ class PaddingArea(QWidget):
 
         path['points'].append(event.pos())
 
-        if self.last_pos is not None:
-            distance = math.sqrt((event.x() - self.last_pos.x())**2 + (event.y() - self.last_pos.y())**2)
-            time_diff = self.last_time.msecsTo(QTime.currentTime()) / 1000.0
-            if time_diff > 0:
-                speed = distance / time_diff
-                self.frequency = speed
-
         self.pad_controller.add_point(self.last_pos, event.pos(), self.last_time, QTime.currentTime())
         self.last_pos = event.pos()
         self.last_time = QTime.currentTime()
@@ -80,8 +71,5 @@ class PaddingArea(QWidget):
         if event.button() == Qt.LeftButton:
             self.paths.clear()
 
-    def mouseReleaseEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            self.frequency = 0
 
 
