@@ -9,43 +9,43 @@ class CCodeController:
     def get_direct_form_ii(self):
         poles = self.filter_model.poles
         zeros = self.filter_model.zeroes
-        numerator, denominator = self.direct_form_II(poles, zeros)
+        numerator, denominator = self.filter_model.get_transfer_function()
         return numerator, denominator
 
-    def direct_form_II(self, poles, zeros):
-        numerator = [1]
-        denominator = [1]
-        for pole in poles:
-            denominator = np.convolve(denominator, [1, -complex(pole.real, pole.imag)])
-        for zero in zeros:
-            numerator = np.convolve(numerator, [1, -complex(zero.real, zero.imag)])
-        return numerator, denominator
+    # def direct_form_II(self, poles, zeros):
+    #     numerator = [1]
+    #     denominator = [1]
+    #     for pole in poles:
+    #         denominator = np.convolve(denominator, [1, -complex(pole.real, pole.imag)])
+    #     for zero in zeros:
+    #         numerator = np.convolve(numerator, [1, -complex(zero.real, zero.imag)])
+    #     return numerator, denominator
 
     def get_cascade_form(self):
         poles = self.filter_model.poles
         zeros = self.filter_model.zeroes
-        sections = self.cascade_form(poles, zeros)
+        sections = self.filter_model.get_cascade_form()
         return sections
 
-    def cascade_form(self, poles, zeros):
-        sections = []
-        if len(poles) % 2 != 0 or len(zeros) % 2 != 0:
-            raise ValueError("Number of poles and zeros must be even for cascade form.")
+    # def cascade_form(self, poles, zeros):
+    #     sections = []
+    #     if len(poles) % 2 != 0 or len(zeros) % 2 != 0:
+    #         raise ValueError("Number of poles and zeros must be even for cascade form.")
 
-        for i in range(0, len(poles), 2):
-            section_poles = poles[i:i+2]
-            section_zeros = zeros[i:i+2]
+    #     for i in range(0, len(poles), 2):
+    #         section_poles = poles[i:i+2]
+    #         section_zeros = zeros[i:i+2]
 
-            numerator = [1]
-            denominator = [1]
+    #         numerator = [1]
+    #         denominator = [1]
 
-            for pole in section_poles:
-                denominator = np.convolve(denominator, [1, -complex(pole.real, pole.imag)])
-            for zero in section_zeros:
-                numerator = np.convolve(numerator, [1, -complex(zero.real, zero.imag)])
+    #         for pole in section_poles:
+    #             denominator = np.convolve(denominator, [1, -complex(pole.real, pole.imag)])
+    #         for zero in section_zeros:
+    #             numerator = np.convolve(numerator, [1, -complex(zero.real, zero.imag)])
 
-            sections.append((numerator, denominator))
-        return sections
+    #         sections.append((numerator, denominator))
+    #     return sections
 
     def generate_c_code(self, filename, method="direct_form_II"):
         if method == "direct_form_II":
@@ -115,7 +115,9 @@ int main() {{
 #include <complex.h>
 """
 
-            for i, (b_sec, a_sec) in enumerate(sections):
+            for i, section in enumerate(sections):
+                b_sec = section[0:3]  # Get b0, b1, b2
+                a_sec = [1.0] + section[3:5]  # Get a0=1, a1, a2
                 code += f"""
 // Section {i + 1}
 double complex b{i + 1}[] = {{{', '.join(f'{coef.real} + {coef.imag}*I' for coef in b_sec)}}};

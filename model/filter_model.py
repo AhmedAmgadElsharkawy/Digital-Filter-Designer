@@ -166,7 +166,7 @@ class FilterModel(QObject):
         # Add both parts of conjugate pairs
         for z in self.conj_zeroes:
             all_zeros.append(z)
-            all_zeros.append(complex(z.real, -z.imag))  # Add conjugate
+            all_zeros.append(complex(z.real, -z.imag))  
         return all_zeros
 
     def get_poles(self):
@@ -176,10 +176,10 @@ class FilterModel(QObject):
         # Add both parts of conjugate pairs
         for p in self.conj_poles:
             all_poles.append(p)
-            all_poles.append(complex(p.real, -p.imag))  # Add conjugate
+            all_poles.append(complex(p.real, -p.imag))  
         return all_poles
 
-    def get_transfer_function(self, controller):
+    def get_transfer_function(self):
         """Returns transfer function coefficients as (numerator, denominator)"""
         zeros = self.get_zeros()
         poles = self.get_poles()

@@ -156,7 +156,7 @@ class StructureController:
         self._create_figure(figsize)
 
         # Calculate number of delays and plot dimensions
-        tf = self.filter.get_transfer_function(self)
+        tf = self.filter.get_transfer_function()
         # Remove leading 1 from denominator
         tf = (tf[0], tf[1][1:])
         n_delays = self._calculate_delays(tf)
