@@ -36,10 +36,6 @@ A desktop app for real-time digital filter design, allowing users to place and m
 
 ## Features
 
-# Digital Filter Designer  
-
-## Features  
-
 - **Interactive Z-Plane Editor**: Users can place, modify, and delete zeros and poles on the z-plane.  
   - **Add**: Left-click to place the selected type (zero, pole, or their conjugates).
   - **Delete**: Right-click to remove the hovered zero, pole, or conjugate.
