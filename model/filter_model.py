@@ -84,6 +84,15 @@ class FilterModel(QObject):
         self.clear_poles()
         self.updated.emit()
 
+    def swap_all(self):
+        temp = self.zeroes.copy()
+        self.zeroes = self.poles.copy()
+        self.poles = temp.copy()
+        temp = self.conj_poles.copy()
+        self.conj_poles = self.conj_zeroes.copy()
+        self.conj_zeroes = temp.copy()
+        self.updated.emit()
+        
     def add_complex_value(self,complex_value,complex_value_type):
         if complex_value_type == "Pole":
             self.add_pole(complex_value)
@@ -178,6 +187,7 @@ class FilterModel(QObject):
             all_poles.append(p)
             all_poles.append(complex(p.real, -p.imag))  
         return all_poles
+            
 
     def get_transfer_function(self):
         """Returns transfer function coefficients as (numerator, denominator)"""

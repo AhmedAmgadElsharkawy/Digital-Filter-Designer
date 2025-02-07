@@ -83,8 +83,10 @@ class MainWindow(QMainWindow):
         self.controls_widget_layout.addWidget(self.swap_controls_widget)
         self.swap_poles_button = QPushButton("Swap poles")
         self.swap_zeroes_button = QPushButton("Swap Zeroes")
+        self.swap_all_button = QPushButton("Swap All")
         self.swap_controls_widget_layout.addWidget(self.swap_poles_button)
         self.swap_controls_widget_layout.addWidget(self.swap_zeroes_button)
+        self.swap_controls_widget_layout.addWidget(self.swap_all_button)
 
         self.controls_widget_layout.addStretch()
 

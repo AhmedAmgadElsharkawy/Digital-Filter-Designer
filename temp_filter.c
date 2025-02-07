@@ -2,29 +2,30 @@
 #include <stdio.h>
 #include <complex.h>
 
-// Section 1
-double complex b1[] = {1.0 + 0.0*I, -0.11111000000000004 + 0.0*I, 1.2345654321000001 + 0.0*I};
-double complex a1[] = {0.81 + 0.0*I, 0.0 + 0.0*I};
+// Filter coefficients
+double complex b[] = {1.0 + 0.0*I};
+double complex a[] = {};
 
-double complex x1[3] = {0};
-double complex y1[3] = {0};
+double complex x[1] = {0};  // Input buffer
+double complex y[1] = {0};  // Output buffer
 
-double complex filter1(double complex input) {
-    for (int j = 2; j > 0; j--) {
-        x1[j] = x1[j - 1];
-        y1[j] = y1[j - 1];
-    }
-    x1[0] = input;
-    y1[0] = 0 + 0*I;
-
-    for (int j = 0; j < 3; j++) {
-        y1[0] += b1[j] * x1[j];
-    }
-    for (int j = 1; j < 3; j++) {
-        y1[0] -= a1[j] * y1[j];
+double complex filter(double complex input) {
+    for (int i = 0; i > 0; i--) {
+        x[i] = x[i-1];  // Shift input
+        y[i] = y[i-1];  // Shift output
     }
 
-    return y1[0];
+    x[0] = input;
+    y[0] = 0 + 0*I;
+
+    for (int i = 0; i < 1; i++) {
+        y[0] += b[i] * x[i];
+    }
+    for (int i = 1; i < 1; i++) {
+        y[0] -= a[i] * y[i];
+    }
+
+    return y[0];
 }
 
 int main() {
@@ -32,13 +33,11 @@ int main() {
     int n = sizeof(input_signal) / sizeof(input_signal[0]);
 
     printf("Filtered output:\n");
-
-    for (int j = 0; j < n; j++) {
-        input_signal[j] = filter1(input_signal[j]);
-    }
-
-    for (int j = 0; j < n; j++) {
-        printf("Output: %.2f%+.2fi\n", creal(input_signal[j]), cimag(input_signal[j]));
+    for (int i = 0; i < n; i++) {
+        double complex output = filter(input_signal[i]);
+        printf("Input: %.2f%+.2fi, Output: %.2f%+.2fi\n",
+            creal(input_signal[i]), cimag(input_signal[i]),
+            creal(output), cimag(output));
     }
 
     return 0;

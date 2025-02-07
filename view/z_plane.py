@@ -213,6 +213,26 @@ class ZPlane(QGraphicsView):
             item.setPlainText("O")
             item.setDefaultTextColor(Qt.GlobalColor.blue)
 
+    def swap_all_graphically(self):
+        for item, item_data in self.graphical_items.items():
+            if item_data["type"] == "Pole":
+                item_data["type"] = "Zero"
+            elif item_data["type"] == "Zero":
+                item_data["type"] = "Pole"
+            elif item_data["type"] == "Conj Poles":
+                item_data["type"] = "Conj Zeroes"
+            elif item_data["type"] == "Conj Zeroes":
+                item_data["type"] = "Conj Poles"
+
+            if item_data["type"] in ["Pole", "Conj Poles"]:
+                item.setPlainText("X")
+                item.setDefaultTextColor(Qt.GlobalColor.red)
+            else:
+                item.setPlainText("O")
+                item.setDefaultTextColor(Qt.GlobalColor.blue)
+
+
+
     def change_item_position_graphically(self,item,new_pos):
         bounding_rect = item.boundingRect()
         x_offset = bounding_rect.width() / 2

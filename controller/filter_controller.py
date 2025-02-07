@@ -12,6 +12,7 @@ class FilterController():
 
         self.main_window.swap_poles_button.clicked.connect(self.swap_poles)
         self.main_window.swap_zeroes_button.clicked.connect(self.swap_zeroes)
+        self.main_window.swap_all_button.clicked.connect(self.swap_all)
 
         self.main_window.filter_model.updated.connect(self.plot_filter_response)
 
@@ -41,6 +42,11 @@ class FilterController():
     def swap_zeroes(self):
         self.main_window.filter_model.swap_zeroes()
         self.main_window.filter_z_plane.swap_zeroes_graphically()
+        self.main_window.save_load_controller.save_current_state()
+
+    def swap_all(self):
+        self.main_window.filter_model.swap_all()
+        self.main_window.filter_z_plane.swap_all_graphically()
         self.main_window.save_load_controller.save_current_state()
 
     def plot_filter_response(self):
